@@ -33,6 +33,12 @@ class Expense
     #[ORM\Column(nullable: true)]
     private ?bool $paid = null;
 
+    public function __construct()
+    {
+        $this->createdAt = new \DateTimeImmutable();
+        $this->paid = false;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
