@@ -18,8 +18,15 @@ class ExpenseController extends AbstractController
     #[Route('/', name: 'app_expense_index', methods: ['GET'])]
     public function index(ExpenseRepository $expenseRepository): Response
     {
+        $expenses = $expenseRepository->findAll();
+        $total = $expenseRepository->calcAllExpenses($expenses);
+        $totalPaid = $expenseRepository->calcAllExpenses($expenses, true);
+        $totalUnPaid = $expenseRepository->calcAllExpenses($expenses, false);
         return $this->render('expense/index.html.twig', [
-            'expenses' => $expenseRepository->findAll(),
+            'expenses' => $expenses,
+            'totalAmount' => $total,
+            'totalPaidAmount' => $totalPaid,
+            'totalUnpaidAmount' => $totalUnPaid,
         ]);
     }
 

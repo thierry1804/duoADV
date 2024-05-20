@@ -16,8 +16,6 @@ class ExpenseType extends AbstractType
         $builder
             ->add('recordedAt', null, [
                 'widget' => 'single_text',
-                'html5' => false,
-                'attr' => ['class' => 'js-datepicker'],
             ])
             ->add('description')
             ->add('amount')
