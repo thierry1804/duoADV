@@ -45,6 +45,10 @@
                         {% set menu4Class = 'relative flex items-center space-x-4 rounded-xl bg-gradient-to-r from-sky-600 to-cyan-400 px-4 py-3 text-white' %}
                         {% set title = 'DUO - ADV - Dépense' %}
                     {% endif %}
+                    {% if app.request.attributes.get("_route") starts with 'app_sale' %}
+                        {% set menu5Class = 'relative flex items-center space-x-4 rounded-xl bg-gradient-to-r from-sky-600 to-cyan-400 px-4 py-3 text-white' %}
+                        {% set title = 'DUO - ADV - Vente' %}
+                    {% endif %}
                     <ul class="mt-8 space-y-2 tracking-wide">
                         <li>
                             <a
@@ -144,7 +148,7 @@
                         </li>
                         <li>
                             <a
-                                    href="#"
+                                    href="{{ path('app_sale_index') }}"
                                     class="{{ menu5Class }}"
                             >
                                 <svg
@@ -164,7 +168,7 @@
                                             clip-rule="evenodd"
                                     />
                                 </svg>
-                                <span class="group-hover:text-gray-700 dark:group-hover:text-white">Finance</span>
+                                <span class="group-hover:text-gray-700 dark:group-hover:text-white">Ventes</span>
                             </a>
                         </li>
                     </ul>
