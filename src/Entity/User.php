@@ -53,10 +53,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Sale::class, mappedBy: 'registeredBy')]
     private Collection $sales;
 
+    /**
+     * @var Collection<int, Lettrage>
+     */
+    #[ORM\OneToMany(targetEntity: Lettrage::class, mappedBy: 'recordedBy', orphanRemoval: true)]
+    private Collection $lettrages;
+
     public function __construct()
     {
         $this->expenses = new ArrayCollection();
         $this->sales = new ArrayCollection();
+        $this->lettrages = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -212,6 +219,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($sale->getRegisteredBy() === $this) {
                 $sale->setRegisteredBy(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Lettrage>
+     */
+    public function getLettrages(): Collection
+    {
+        return $this->lettrages;
+    }
+
+    public function addLettrage(Lettrage $lettrage): static
+    {
+        if (!$this->lettrages->contains($lettrage)) {
+            $this->lettrages->add($lettrage);
+            $lettrage->setRecordedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLettrage(Lettrage $lettrage): static
+    {
+        if ($this->lettrages->removeElement($lettrage)) {
+            // set the owning side to null (unless already changed)
+            if ($lettrage->getRecordedBy() === $this) {
+                $lettrage->setRecordedBy(null);
             }
         }
 
