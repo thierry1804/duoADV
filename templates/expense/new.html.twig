@@ -1,0 +1,13 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Nouvelle dépense{% endblock %}
+
+{% block body %}
+    <h1>Ajout d'une nouvelle dépense</h1>
+
+    {{ include('expense/_form.html.twig') }}
+
+    <p class="border-t border-gray-100 dark:border-gray-700 pt-6 text-sm text-gray-500 dark:text-gray-400">
+        <a href="{{ path('app_expense_index') }}" class="text-primary">Back to list</a>
+    </p>
+{% endblock %}
