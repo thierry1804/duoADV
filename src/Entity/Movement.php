@@ -39,6 +39,11 @@ class Movement
     #[ORM\Column]
     private ?float $stockAfter = null;
 
+    public function __construct()
+    {
+        $this->recordedAt = new \DateTimeImmutable();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
