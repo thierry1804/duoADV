@@ -9,6 +9,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Process;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/sale')]
@@ -23,6 +25,7 @@ class SaleController extends AbstractController
         $sale->setQtyReturned(0);
         $sale->setSoldOn(new \DateTime());
         $sale->setRegisteredBy($this->getUser());
+        $sale->setReceived(true);
         return $this->render('sale/index.html.twig', [
             'sales' => $saleRepository->findBy([], ['recordedAt' => 'DESC']),
             'form' => $this->createForm(SaleType::class, $sale),
@@ -39,6 +42,13 @@ class SaleController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($sale);
             $entityManager->flush();
+
+            $process = new Process(['php', '../bin/console', 'app:historize-stock']);
+            $process->run();
+
+            if (!$process->isSuccessful()) {
+                throw new ProcessFailedException($process);
+            }
 
             return $this->redirectToRoute('app_sale_index', [], Response::HTTP_SEE_OTHER);
         }
