@@ -1,0 +1,13 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Nouvelle vente{% endblock %}
+
+{% block body %}
+    <h1>Ajout d'une nouvelle vente</h1>
+
+    {{ include('sale/_form.html.twig') }}
+
+    <p class="border-t border-gray-100 dark:border-gray-700 pt-6 text-sm text-gray-500 dark:text-gray-400">
+        <a href="{{ path('app_sale_index') }}" class="text-primary">Back to list</a>
+    </p>
+{% endblock %}

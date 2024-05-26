@@ -47,9 +47,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Expense::class, mappedBy: 'createdBy')]
     private Collection $expenses;
 
+    /**
+     * @var Collection<int, Sale>
+     */
+    #[ORM\OneToMany(targetEntity: Sale::class, mappedBy: 'registeredBy')]
+    private Collection $sales;
+
     public function __construct()
     {
         $this->expenses = new ArrayCollection();
+        $this->sales = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -175,6 +182,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($expense->getCreatedBy() === $this) {
                 $expense->setCreatedBy(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Sale>
+     */
+    public function getSales(): Collection
+    {
+        return $this->sales;
+    }
+
+    public function addSale(Sale $sale): static
+    {
+        if (!$this->sales->contains($sale)) {
+            $this->sales->add($sale);
+            $sale->setRegisteredBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSale(Sale $sale): static
+    {
+        if ($this->sales->removeElement($sale)) {
+            // set the owning side to null (unless already changed)
+            if ($sale->getRegisteredBy() === $this) {
+                $sale->setRegisteredBy(null);
             }
         }
 
