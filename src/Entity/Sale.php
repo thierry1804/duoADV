@@ -37,6 +37,9 @@ class Sale
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $soldOn = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $historized = null;
+
     public function __construct()
     {
         $this->recordedAt = new \DateTimeImmutable();
@@ -127,6 +130,18 @@ class Sale
     public function setSoldOn(\DateTimeInterface $soldOn): static
     {
         $this->soldOn = $soldOn;
+
+        return $this;
+    }
+
+    public function isHistorized(): ?bool
+    {
+        return $this->historized;
+    }
+
+    public function setHistorized(?bool $historized): static
+    {
+        $this->historized = $historized;
 
         return $this;
     }

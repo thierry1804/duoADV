@@ -40,9 +40,16 @@ class Article
     #[ORM\OneToMany(targetEntity: Sale::class, mappedBy: 'item', orphanRemoval: true)]
     private Collection $sales;
 
+    /**
+     * @var Collection<int, Movement>
+     */
+    #[ORM\OneToMany(targetEntity: Movement::class, mappedBy: 'article', orphanRemoval: true)]
+    private Collection $movements;
+
     public function __construct()
     {
         $this->sales = new ArrayCollection();
+        $this->movements = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -155,5 +162,35 @@ class Article
     public function __toString(): string
     {
         return $this->getLabel();
+    }
+
+    /**
+     * @return Collection<int, Movement>
+     */
+    public function getMovements(): Collection
+    {
+        return $this->movements;
+    }
+
+    public function addMovement(Movement $movement): static
+    {
+        if (!$this->movements->contains($movement)) {
+            $this->movements->add($movement);
+            $movement->setArticle($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMovement(Movement $movement): static
+    {
+        if ($this->movements->removeElement($movement)) {
+            // set the owning side to null (unless already changed)
+            if ($movement->getArticle() === $this) {
+                $movement->setArticle(null);
+            }
+        }
+
+        return $this;
     }
 }
