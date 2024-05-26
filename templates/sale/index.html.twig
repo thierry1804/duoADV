@@ -5,51 +5,47 @@
 {% block body %}
     <h1 class="font-bold">
         Ventes
-        <a href="{{ path('app_sale_new') }}">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 inline-block">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-            </svg>
-        </a>
     </h1>
 
     {{ form_start(form, {'action': path('app_sale_new'), 'method': 'POST'}) }}
-        <div class="flex flex-row space-x-4 mb-4 text-xs">
-            <div class="space-y-2 pt-6 basis-1/4">
+    <div class="w-full">
+        <div class="grid lg:grid-cols-6 md:grid-cols-3 sm:grid-cols-1 gap-2 text-xs">
+            <div class="content-center">
                 {{ form_label(form.soldOn, 'Date') }}
                 {{ form_widget(form.soldOn, {'attr': {'class': 'focus:outline-none block w-full rounded-md border border-gray-200 dark:border-gray-600 bg-transparent p-2 text-gray-600 transition duration-300 invalid:ring-2 invalid:ring-red-400 focus:ring-2 focus:ring-cyan-300'}}) }}
             </div>
-            <div class="space-y-2 pt-6 basis-1/4">
-                {{ form_label(form.item, 'Article') }}
+            <div class="content-center">
+                {{ form_label(form.item, 'Artcile') }}
                 {{ form_widget(form.item, {'attr': {'class': 'focus:outline-none block w-full rounded-md border border-gray-200 dark:border-gray-600 bg-transparent p-2 text-gray-600 transition duration-300 invalid:ring-2 invalid:ring-red-400 focus:ring-2 focus:ring-cyan-300'}}) }}
             </div>
-            <div class="space-y-2 pt-6 basis-1/4">
+            <div class="content-center">
                 {{ form_label(form.qty, 'Vente') }}
                 {{ form_widget(form.qty, {'attr': {'class': 'focus:outline-none block w-full rounded-md border border-gray-200 dark:border-gray-600 bg-transparent p-2 text-gray-600 transition duration-300 invalid:ring-2 invalid:ring-red-400 focus:ring-2 focus:ring-cyan-300'}}) }}
             </div>
-            <div class="space-y-2 pt-6 basis-1/4">
+            <div class="content-center">
                 {{ form_label(form.qtyReturned, 'Retour') }}
                 {{ form_widget(form.qtyReturned, {'attr': {'class': 'focus:outline-none block w-full rounded-md border border-gray-200 dark:border-gray-600 bg-transparent p-2 text-gray-600 transition duration-300 invalid:ring-2 invalid:ring-red-400 focus:ring-2 focus:ring-cyan-300'}}) }}
             </div>
-            <div class="space-y-2 pt-6 basis-1/4">
-                <div class="checkbox mb-3">
-                    <label>
-                        {{ form_widget(form.received) }} Encaissé
-                    </label>
-                </div>
+            <div class="content-center">
+                {{ form_label(form.received, 'Encaissé') }}
+                {{ form_widget(form.received, {'attr': {'class': 'focus:outline-none block rounded-md border border-gray-200 dark:border-gray-600 bg-transparent p-2 text-gray-600 transition duration-300 invalid:ring-2 invalid:ring-red-400 focus:ring-2 focus:ring-cyan-300 my-2'}}) }}
             </div>
             <div class="hidden">
                 {{ form_widget(form.registeredBy) }}
             </div>
-            {{ form_widget(form) }}
-            <div class="space-y-2 pt-6 basis-1/4">
-                <button type="submit" class="z-auto rounded bg-sky-400 relative flex h-11 w-full items-center justify-center px-6 before:absolute before:inset-0 before:rounded-full before:bg-primary before:transition before:duration-300 hover:before:scale-105 active:duration-75 active:before:scale-95">
-                    <span class="relative text-base font-semibold text-white dark:text-dark">{{ button_label|default('Save') }}</span>
+            <div class="content-center">
+                <button type="submit" class="rounded bg-sky-400 relative flex h-9 items-center justify-center px-4 before:absolute before:inset-0 before:rounded-full before:bg-primary before:transition before:duration-300 hover:before:scale-105 active:duration-75 active:before:scale-95">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 inline-block">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
                 </button>
             </div>
         </div>
+        {{ form_widget(form) }}
+    </div>
     {{ form_end(form) }}
 
-    <table class="border-collapse table-auto w-full text-xs">
+    <table class="border-collapse table-auto w-full text-xs mt-4">
         <thead>
             <tr>
                 <th class="border-b dark:border-slate-600 font-medium p-2 pl-8 pt-0 pb-3 text-slate-400 dark:text-slate-200 text-left">Créée par</th>

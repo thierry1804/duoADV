@@ -22,11 +22,18 @@ class ExpenseController extends AbstractController
         $total = $expenseRepository->calcAllExpenses($expenses);
         $totalPaid = $expenseRepository->calcAllExpenses($expenses, true);
         $totalUnPaid = $expenseRepository->calcAllExpenses($expenses, false);
+        $expense = new Expense();
+        $expense->setRecordedAt(new \DateTime());
+        $expense->setAmount(0);
+        $expense->setPaid(false);
+        $expense->setCreatedBy($this->getUser());
+        $form = $this->createForm(ExpenseType::class, $expense);
         return $this->render('expense/index.html.twig', [
             'expenses' => $expenses,
             'totalAmount' => $total,
             'totalPaidAmount' => $totalPaid,
             'totalUnpaidAmount' => $totalUnPaid,
+            'form' => $form,
         ]);
     }
 

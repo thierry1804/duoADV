@@ -18,6 +18,11 @@ class SaleController extends AbstractController
     public function index(SaleRepository $saleRepository): Response
     {
         $sale = new Sale();
+        $sale->setRecordedAt(new \DateTimeImmutable());
+        $sale->setQty(0);
+        $sale->setQtyReturned(0);
+        $sale->setSoldOn(new \DateTime());
+        $sale->setRegisteredBy($this->getUser());
         return $this->render('sale/index.html.twig', [
             'sales' => $saleRepository->findBy([], ['recordedAt' => 'DESC']),
             'form' => $this->createForm(SaleType::class, $sale),
