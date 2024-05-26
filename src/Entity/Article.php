@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ArticleRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -31,6 +33,17 @@ class Article
 
     #[ORM\Column]
     private ?int $inStock = null;
+
+    /**
+     * @var Collection<int, Sale>
+     */
+    #[ORM\OneToMany(targetEntity: Sale::class, mappedBy: 'item', orphanRemoval: true)]
+    private Collection $sales;
+
+    public function __construct()
+    {
+        $this->sales = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -107,5 +120,40 @@ class Article
         $this->inStock = $inStock;
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Sale>
+     */
+    public function getSales(): Collection
+    {
+        return $this->sales;
+    }
+
+    public function addSale(Sale $sale): static
+    {
+        if (!$this->sales->contains($sale)) {
+            $this->sales->add($sale);
+            $sale->setItem($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSale(Sale $sale): static
+    {
+        if ($this->sales->removeElement($sale)) {
+            // set the owning side to null (unless already changed)
+            if ($sale->getItem() === $this) {
+                $sale->setItem(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->getLabel();
     }
 }
