@@ -37,6 +37,10 @@
                     {% set menu4Class = 'group flex items-center space-x-4 rounded-md px-4 py-3 text-gray-600 dark:text-gray-300' %}
                     {% set menu5Class = 'group flex items-center space-x-4 rounded-md px-4 py-3 text-gray-600 dark:text-gray-300' %}
                     {% set title = 'DUO - ADV' %}
+                    {% if app.request.attributes.get("_route") starts with 'app_lettrage' %}
+                        {% set menu2Class = 'relative flex items-center space-x-4 rounded-xl bg-gradient-to-r from-sky-600 to-cyan-400 px-4 py-3 text-white' %}
+                        {% set title = 'DUO - ADV - Lettrage' %}
+                    {% endif %}
                     {% if app.request.attributes.get("_route") starts with 'app_article' %}
                         {% set menu3Class = 'relative flex items-center space-x-4 rounded-xl bg-gradient-to-r from-sky-600 to-cyan-400 px-4 py-3 text-white' %}
                         {% set title = 'DUO - ADV - Stock' %}
@@ -75,7 +79,7 @@
                         </li>
                         <li>
                             <a
-                                    href="#"
+                                    href="{{ path('app_lettrage_index') }}"
                                     class="{{ menu2Class }}"
                             >
                                 <svg

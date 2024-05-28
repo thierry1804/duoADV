@@ -39,6 +39,7 @@ class Lettrage
 
     public function __construct()
     {
+        $this->recordedAt = new \DateTimeImmutable();
         $this->sales = new ArrayCollection();
         $this->expenses = new ArrayCollection();
     }
