@@ -19,7 +19,7 @@
             >
                 <div>
                     <div class="-mx-6 px-6 py-4">
-                        <a href="{{ path('app_home') }}" title="home" class="flex gap-x-2.5 text-sm font-semibold leading-6 text-slate-900 dark:text-slate-200">
+                        <a href="{{ path('app_dashboard') }}" title="home" class="flex gap-x-2.5 text-sm font-semibold leading-6 text-slate-900 dark:text-slate-200">
                             <img src="{{ asset('images/logo.jpg') }}" alt="duo logo" />
                         </a>
                     </div>
@@ -37,6 +37,10 @@
                     {% set menu4Class = 'group flex items-center space-x-4 rounded-md px-4 py-3 text-gray-600 dark:text-gray-300' %}
                     {% set menu5Class = 'group flex items-center space-x-4 rounded-md px-4 py-3 text-gray-600 dark:text-gray-300' %}
                     {% set title = 'DUO - ADV' %}
+                    {% if app.request.attributes.get("_route") starts with 'app_dashboard' %}
+                        {% set menu1Class = 'relative flex items-center space-x-4 rounded-xl bg-gradient-to-r from-sky-600 to-cyan-400 px-4 py-3 text-white' %}
+                        {% set title = 'DUO - ADV - Dashboard' %}
+                    {% endif %}
                     {% if app.request.attributes.get("_route") starts with 'app_lettrage' %}
                         {% set menu2Class = 'relative flex items-center space-x-4 rounded-xl bg-gradient-to-r from-sky-600 to-cyan-400 px-4 py-3 text-white' %}
                         {% set title = 'DUO - ADV - Lettrage' %}
@@ -56,7 +60,7 @@
                     <ul class="mt-8 space-y-2 tracking-wide">
                         <li>
                             <a
-                                    href="#"
+                                    href="{{ path('app_dashboard') }}"
                                     aria-label="dashboard"
                                     class="{{ menu1Class }}"
                             >
