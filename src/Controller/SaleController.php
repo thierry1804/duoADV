@@ -7,6 +7,7 @@ use App\Form\SaleType;
 use App\Repository\SaleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Process\Exception\ProcessFailedException;
@@ -94,5 +95,18 @@ class SaleController extends AbstractController
         }
 
         return $this->redirectToRoute('app_sale_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/{id}/edit/payment-status', name: 'app_sale_edit_payment_status', methods: ['GET', 'POST'])]
+    public function editPaymentStatus(Sale $sale, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $received = !$sale->isReceived();
+        if ($sale->getLettrage() === null) {
+            $sale->setReceived($received);
+            $entityManager->persist($sale);
+            $entityManager->flush();
+        }
+
+        return new JsonResponse(['status' => $received]);
     }
 }
