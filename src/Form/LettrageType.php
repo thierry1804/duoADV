@@ -22,6 +22,8 @@ class LettrageType extends AbstractType
                 'widget' => 'single_text',
             ])
             ->add('label')
+            ->add('amountToBank')
+            ->add('dateToBank')
             ->add('recordedBy', EntityType::class, [
                 'class' => User::class,
                 'choice_label' => 'id',
@@ -36,7 +38,8 @@ class LettrageType extends AbstractType
                 },
                 'choice_label' => function (Sale $sale) {
                     $article = $sale->getItem();
-                    $montant = $article->getSellPrice() * ($sale->getQty() - $sale->getQtyReturned());
+                    $pu = ($sale->getQty() > 0)?$article->getSellPrice()- $sale->getPromo():$article->getSellPrice();
+                    $montant = $pu * ($sale->getQty() - $sale->getQtyReturned());
                     return $sale->getSoldOn()->format('d/m/Y')
                         . ' : ' . number_format($montant, 2, ',', ' ')
                         . ' [ ' . $article->getLabel()

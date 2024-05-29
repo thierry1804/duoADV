@@ -13,13 +13,13 @@
     </h1>
 
     <div class="w-full my-4">
-        <div class="grid md:grid-cols-3 sm:grid-cols-1 gap-2 text-xs">
+        <div class="grid md:grid-cols-4 sm:grid-cols-1 gap-2 text-xs">
             <div class="content-center">
                 <div class="h-full space-y-6 group p-4 rounded-xl bg-white border border-gray-200/50 dark:shadow-none dark:border-gray-700 dark:bg-gray-800 bg-opacity-50 shadow-2xl shadow-gray-600/10">
                     <div>
                         <h5 class="text-center text-xl text-gray-600 dark:text-gray-300">Total des ventes</h5>
                         <div class="mt-2 flex justify-center gap-4">
-                            <h3 class="text-3xl font-bold text-gray-700 dark:text-white text-nowrap">{{ totals.sales|number_format(2, ",", " ") }} Ar</h3>
+                            <h3 class="text-3xl font-bold text-gray-700 dark:text-white text-nowrap">{{ totals.sales|number_format(0, ",", " ") }} Ar</h3>
                         </div>
                     </div>
                 </div>
@@ -30,7 +30,7 @@
                     <div>
                         <h5 class="text-center text-xl text-gray-600 dark:text-gray-300">Total des dépenses</h5>
                         <div class="mt-2 flex justify-center gap-4">
-                            <h3 class="text-3xl font-bold text-gray-700 dark:text-white text-nowrap">{{ totals.expenses|number_format(2, ",", " ") }} Ar</h3>
+                            <h3 class="text-3xl font-bold text-gray-700 dark:text-white text-nowrap">{{ totals.expenses|number_format(0, ",", " ") }} Ar</h3>
                         </div>
                     </div>
                 </div>
@@ -41,7 +41,18 @@
                     <div>
                         <h5 class="text-center text-xl text-gray-600 dark:text-gray-300">Total à remettre en banque</h5>
                         <div class="mt-2 flex justify-center gap-4">
-                            <h3 class="text-3xl font-bold text-gray-700 dark:text-white text-nowrap">{{ (totals.sales - totals.expenses)|number_format(2, ",", " ") }} Ar</h3>
+                            <h3 class="text-3xl font-bold text-gray-700 dark:text-white text-nowrap">{{ ((totals.sales - totals.expenses) - totals.toBank)|number_format(0, ",", " ") }} Ar</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-center">
+                <div class="h-full space-y-6 group p-4 rounded-xl bg-white border border-gray-200/50 dark:shadow-none dark:border-gray-700 dark:bg-gray-800 bg-opacity-50 shadow-2xl shadow-gray-600/10">
+                    <div>
+                        <h5 class="text-center text-xl text-gray-600 dark:text-gray-300">Remis en banque</h5>
+                        <div class="mt-2 flex justify-center gap-4">
+                            <h3 class="text-3xl font-bold text-gray-700 dark:text-white text-nowrap">{{ totals.toBank|number_format(0, ",", " ") }} Ar</h3>
                         </div>
                     </div>
                 </div>
@@ -56,6 +67,7 @@
                 <th class="border-b dark:border-slate-600 font-medium p-2 pl-8 pt-0 pb-3 text-slate-400 dark:text-slate-200 text-right">Ventes</th>
                 <th class="border-b dark:border-slate-600 font-medium p-2 pl-8 pt-0 pb-3 text-slate-400 dark:text-slate-200 text-right">Dépenses</th>
                 <th class="border-b dark:border-slate-600 font-medium p-2 pl-8 pt-0 pb-3 text-slate-400 dark:text-slate-200 text-right">A mettre en banque</th>
+                <th class="border-b dark:border-slate-600 font-medium p-2 pl-8 pt-0 pb-3 text-slate-400 dark:text-slate-200 text-right">Remis en banque</th>
                 <th class="border-b dark:border-slate-600 font-medium p-2 pl-8 pt-0 pb-3 text-slate-400 dark:text-slate-200 text-left">actions</th>
             </tr>
         </thead>
@@ -71,6 +83,9 @@
                 </td>
                 <td class="border-b border-slate-100 dark:border-slate-700 p-2 pl-8 text-slate-500 dark:text-slate-400 text-right">
                     {{ (lettrage.amountSales - lettrage.amountExpenses)|number_format(2, ",", " ") }}
+                </td>
+                <td class="border-b border-slate-100 dark:border-slate-700 p-2 pl-8 text-slate-500 dark:text-slate-400 text-right">
+                    {{ lettrage.amountToBank|number_format(2, ",", " ") }}
                 </td>
                 <td class="border-b border-slate-100 dark:border-slate-700 p-2 pl-8 text-slate-500 dark:text-slate-400">
                     <a href="{{ path('app_lettrage_show', {'id': lettrage.id}) }}">show</a>

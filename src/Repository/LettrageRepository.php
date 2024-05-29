@@ -27,7 +27,7 @@ class LettrageRepository extends ServiceEntityRepository
                 l.id, 
                 l.label, 
                 (
-                    SELECT COALESCE(SUM(a.sell_price * (s.qty - s.qty_returned)), 0)
+                    SELECT COALESCE(SUM(IF(s.promo > 0, a.sell_price - a.sell_price, a.sell_price) * (s.qty - s.qty_returned)), 0)
                     FROM sale s
                     INNER JOIN article a ON a.id = s.item_id
                     WHERE s.lettrage_id = l.id
@@ -36,7 +36,8 @@ class LettrageRepository extends ServiceEntityRepository
                     SELECT COALESCE(SUM(e.amount), 0)
                     FROM expense e
                     WHERE e.lettrage_id = l.id
-                ) AS 'amountExpenses'
+                ) AS 'amountExpenses',
+                l.amount_to_bank AS 'amountToBank'
             FROM lettrage l
             WHERE 1;
         ";
@@ -52,11 +53,13 @@ class LettrageRepository extends ServiceEntityRepository
         $totals = [
             'sales' => 0,
             'expenses' => 0,
+            'toBank' => 0,
         ];
 
         foreach ($lettrages as $item) {
             $totals['sales'] += $item['amountSales'];
             $totals['expenses'] += $item['amountExpenses'];
+            $totals['toBank'] += $item['amountToBank'];
         }
 
         return $totals;

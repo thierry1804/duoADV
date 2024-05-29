@@ -24,6 +24,7 @@ class SaleController extends AbstractController
         $sale->setRecordedAt(new \DateTimeImmutable());
         $sale->setQty(0);
         $sale->setQtyReturned(0);
+        $sale->setPromo(0);
         $sale->setSoldOn(new \DateTime());
         $sale->setRegisteredBy($this->getUser());
         $sale->setReceived(true);

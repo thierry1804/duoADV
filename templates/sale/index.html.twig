@@ -27,13 +27,15 @@
                 {{ form_widget(form.qtyReturned, {'attr': {'class': 'focus:outline-none block w-full rounded-md border border-gray-200 dark:border-gray-600 bg-transparent p-2 text-gray-600 transition duration-300 invalid:ring-2 invalid:ring-red-400 focus:ring-2 focus:ring-cyan-300'}}) }}
             </div>
             <div class="content-center">
-                {{ form_label(form.received, 'Encaissé') }}
-                {{ form_widget(form.received, {'attr': {'class': 'focus:outline-none block rounded-md border border-gray-200 dark:border-gray-600 bg-transparent p-2 text-gray-600 transition duration-300 invalid:ring-2 invalid:ring-red-400 focus:ring-2 focus:ring-cyan-300 my-2'}}) }}
+                {{ form_label(form.promo, 'Réduction') }}
+                {{ form_widget(form.promo, {'attr': {'class': 'focus:outline-none block w-full rounded-md border border-gray-200 dark:border-gray-600 bg-transparent p-2 text-gray-600 transition duration-300 invalid:ring-2 invalid:ring-red-400 focus:ring-2 focus:ring-cyan-300'}}) }}
             </div>
             <div class="hidden">
                 {{ form_widget(form.registeredBy) }}
             </div>
             <div class="content-center">
+                {{ form_label(form.received, 'Encaissé') }}
+                {{ form_widget(form.received, {'attr': {'class': 'focus:outline-none block rounded-md border border-gray-200 dark:border-gray-600 bg-transparent p-2 text-gray-600 transition duration-300 invalid:ring-2 invalid:ring-red-400 focus:ring-2 focus:ring-cyan-300 my-2'}}) }}
                 <button type="submit" class="rounded bg-sky-400 relative flex h-9 items-center justify-center px-4 before:absolute before:inset-0 before:rounded-full before:bg-primary before:transition before:duration-300 hover:before:scale-105 active:duration-75 active:before:scale-95">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 inline-block">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
@@ -55,6 +57,7 @@
                 <th class="border-b dark:border-slate-600 font-medium p-2 pl-8 pt-0 pb-3 text-slate-400 dark:text-slate-200 text-left">Retour</th>
                 <th class="border-b dark:border-slate-600 font-medium p-2 pl-8 pt-0 pb-3 text-slate-400 dark:text-slate-200 text-left">PU</th>
                 <th class="border-b dark:border-slate-600 font-medium p-2 pl-8 pt-0 pb-3 text-slate-400 dark:text-slate-200 text-left">Montant</th>
+                <th class="border-b dark:border-slate-600 font-medium p-2 pl-8 pt-0 pb-3 text-slate-400 dark:text-slate-200 text-left">Lettrage</th>
                 <th class="border-b dark:border-slate-600 font-medium p-2 pl-8 pt-0 pb-3 text-slate-400 dark:text-slate-200 text-center">Encaissé</th>
                 <th class="border-b dark:border-slate-600 font-medium p-2 pl-8 pt-0 pb-3 text-slate-400 dark:text-slate-200 text-left">Actions</th>
             </tr>
@@ -67,8 +70,11 @@
                 <td class="border-b border-slate-100 dark:border-slate-700 p-2 pl-8 text-slate-500 dark:text-slate-400">{{ sale.item.label }}</td>
                 <td class="border-b border-slate-100 dark:border-slate-700 p-2 pl-8 text-slate-500 dark:text-slate-400">{{ sale.qty }}</td>
                 <td class="border-b border-slate-100 dark:border-slate-700 p-2 pl-8 text-slate-500 dark:text-slate-400">{{ sale.qtyReturned }}</td>
-                <td class="border-b border-slate-100 dark:border-slate-700 p-2 pl-8 text-slate-500 dark:text-slate-400 text-nowrap">{{ sale.item.sellPrice|number_format(2, ",", " ") }}</td>
-                <td class="border-b border-slate-100 dark:border-slate-700 p-2 pl-8 text-slate-500 dark:text-slate-400 text-nowrap">{{ ((sale.qty - sale.qtyReturned) * sale.item.sellPrice)|number_format(2, ",", " ") }}</td>
+                <td class="border-b border-slate-100 dark:border-slate-700 p-2 pl-8 text-slate-500 dark:text-slate-400 text-nowrap">{{ ((sale.promo > 0)?sale.item.sellPrice - sale.promo:sale.item.sellPrice)|number_format(2, ",", " ") }}</td>
+                <td class="border-b border-slate-100 dark:border-slate-700 p-2 pl-8 text-slate-500 dark:text-slate-400 text-nowrap">{{ ((sale.qty - sale.qtyReturned) * ((sale.promo > 0)?sale.item.sellPrice - sale.promo:sale.item.sellPrice))|number_format(2, ",", " ") }}</td>
+                <td class="border-b border-slate-100 dark:border-slate-700 p-2 pl-8 text-slate-500 dark:text-slate-400">
+                    {{ (sale.lettrage)?sale.lettrage.label:"" }}
+                </td>
                 <td class="border-b border-slate-100 dark:border-slate-700 p-2 pl-8 text-slate-500 dark:text-slate-400 text-center">
                     <input type="checkbox"
                             {{ (sale.received)?'checked="checked"':'""' }}
