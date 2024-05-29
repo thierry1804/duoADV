@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Lettrage;
 use App\Form\LettrageType;
 use App\Repository\LettrageRepository;
+use Doctrine\DBAL\Exception;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,11 +15,17 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/lettrage')]
 class LettrageController extends AbstractController
 {
+    /**
+     * @throws Exception
+     */
     #[Route('/', name: 'app_lettrage_index', methods: ['GET'])]
     public function index(LettrageRepository $lettrageRepository): Response
     {
+        $lettrages = $lettrageRepository->getAll();
+        $totals = $lettrageRepository->getTotals($lettrages);
         return $this->render('lettrage/index.html.twig', [
-            'lettrages' => $lettrageRepository->findAll(),
+            'lettrages' => $lettrages,
+            'totals' => $totals,
         ]);
     }
 
@@ -31,6 +38,14 @@ class LettrageController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            foreach ($lettrage->getSales() as $sale) {
+                $sale->setLettrage($lettrage);
+                $entityManager->persist($sale);
+            }
+            foreach ($lettrage->getExpenses() as $expense) {
+                $expense->setLettrage($lettrage);
+                $entityManager->persist($expense);
+            }
             $entityManager->persist($lettrage);
             $entityManager->flush();
 

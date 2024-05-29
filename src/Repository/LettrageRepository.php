@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Lettrage;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Exception;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -16,28 +17,48 @@ class LettrageRepository extends ServiceEntityRepository
         parent::__construct($registry, Lettrage::class);
     }
 
-    //    /**
-    //     * @return Lettrage[] Returns an array of Lettrage objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('l')
-    //            ->andWhere('l.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('l.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * @throws Exception
+     */
+    public function getAll(): array
+    {
+        $sql = "
+            SELECT 
+                l.id, 
+                l.label, 
+                (
+                    SELECT COALESCE(SUM(a.sell_price * (s.qty - s.qty_returned)), 0)
+                    FROM sale s
+                    INNER JOIN article a ON a.id = s.item_id
+                    WHERE s.lettrage_id = l.id
+                ) AS 'amountSales',
+                (
+                    SELECT COALESCE(SUM(e.amount), 0)
+                    FROM expense e
+                    WHERE e.lettrage_id = l.id
+                ) AS 'amountExpenses'
+            FROM lettrage l
+            WHERE 1;
+        ";
 
-    //    public function findOneBySomeField($value): ?Lettrage
-    //    {
-    //        return $this->createQueryBuilder('l')
-    //            ->andWhere('l.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->executeQuery($sql);
+
+        return $stmt->fetchAllAssociative();
+    }
+
+    public function getTotals(array $lettrages): array
+    {
+        $totals = [
+            'sales' => 0,
+            'expenses' => 0,
+        ];
+
+        foreach ($lettrages as $item) {
+            $totals['sales'] += $item['amountSales'];
+            $totals['expenses'] += $item['amountExpenses'];
+        }
+
+        return $totals;
+    }
 }

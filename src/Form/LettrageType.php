@@ -31,13 +31,14 @@ class LettrageType extends AbstractType
                 'query_builder' => function (EntityRepository $er): QueryBuilder {
                     return $er->createQueryBuilder('s')
                         ->where('s.lettrage is null')
+                        ->andWhere('s.received = true')
                         ->orderBy('s.id', 'ASC');
                 },
                 'choice_label' => function (Sale $sale) {
                     $article = $sale->getItem();
                     $montant = $article->getSellPrice() * ($sale->getQty() - $sale->getQtyReturned());
                     return $sale->getSoldOn()->format('d/m/Y')
-                        . ' : ' . number_format($article->getSellPrice() * ($sale->getQty() - $sale->getQtyReturned()), 2, ',', ' ')
+                        . ' : ' . number_format($montant, 2, ',', ' ')
                         . ' [ ' . $article->getLabel()
                         . ' - (vendus): ' . $sale->getQty()
                         . ' - (retours): ' . $sale->getQtyReturned()
@@ -45,12 +46,14 @@ class LettrageType extends AbstractType
                 },
                 'expanded' => false,
                 'multiple' => true,
+                'required' => false,
             ])
             ->add('expenses', EntityType::class, [
                 'class' => Expense::class,
                 'query_builder' => function (EntityRepository $er): QueryBuilder {
                     return $er->createQueryBuilder('e')
                         ->where('e.lettrage is null')
+                        ->andWhere('e.paid = true')
                         ->orderBy('e.id', 'ASC');
                 },
                 'choice_label' => function (Expense $expense) {
@@ -61,6 +64,7 @@ class LettrageType extends AbstractType
                 },
                 'expanded' => false,
                 'multiple' => true,
+                'required' => false,
             ])
         ;
     }

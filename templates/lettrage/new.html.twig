@@ -7,5 +7,7 @@
 
     {{ include('lettrage/_form.html.twig') }}
 
-    <a href="{{ path('app_lettrage_index') }}">back to list</a>
+    <p class="border-t border-gray-100 dark:border-gray-700 pt-6 text-sm text-gray-500 dark:text-gray-400">
+        <a href="{{ path('app_lettrage_index') }}" class="text-primary">Back to list</a>
+    </p>
 {% endblock %}
