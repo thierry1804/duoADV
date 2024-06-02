@@ -33,6 +33,9 @@ class Expense
     #[ORM\Column(nullable: true)]
     private ?bool $paid = null;
 
+    #[ORM\ManyToOne(inversedBy: 'expenses')]
+    private ?Lettrage $lettrage = null;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
@@ -112,6 +115,18 @@ class Expense
     public function setPaid(?bool $paid): static
     {
         $this->paid = $paid;
+
+        return $this;
+    }
+
+    public function getLettrage(): ?Lettrage
+    {
+        return $this->lettrage;
+    }
+
+    public function setLettrage(?Lettrage $lettrage): static
+    {
+        $this->lettrage = $lettrage;
 
         return $this;
     }

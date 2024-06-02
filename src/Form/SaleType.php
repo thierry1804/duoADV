@@ -32,6 +32,12 @@ class SaleType extends AbstractType
                 ],
                 'data' => 0,
             ])
+            ->add('promo', null, [
+                'attr' => [
+                    'min' => 0,
+                ],
+                'data' => 0,
+            ])
             ->add('received')
             ->add('registeredBy', EntityType::class, [
                 'class' => User::class,

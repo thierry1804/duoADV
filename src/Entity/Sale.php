@@ -40,6 +40,12 @@ class Sale
     #[ORM\Column(nullable: true)]
     private ?bool $historized = null;
 
+    #[ORM\ManyToOne(inversedBy: 'sales')]
+    private ?Lettrage $lettrage = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $promo = null;
+
     public function __construct()
     {
         $this->recordedAt = new \DateTimeImmutable();
@@ -142,6 +148,30 @@ class Sale
     public function setHistorized(?bool $historized): static
     {
         $this->historized = $historized;
+
+        return $this;
+    }
+
+    public function getLettrage(): ?Lettrage
+    {
+        return $this->lettrage;
+    }
+
+    public function setLettrage(?Lettrage $lettrage): static
+    {
+        $this->lettrage = $lettrage;
+
+        return $this;
+    }
+
+    public function getPromo(): ?float
+    {
+        return $this->promo;
+    }
+
+    public function setPromo(?float $promo): static
+    {
+        $this->promo = $promo;
 
         return $this;
     }

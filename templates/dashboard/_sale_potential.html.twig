@@ -1,0 +1,41 @@
+<div class="dark:bg-gray-800 flex justify-center items-center">
+    <section class="grid gap-6 md:grid-cols-2 max-w-5xl mx-auto w-full ">
+        <div class="p-6 bg-white shadow rounded-2xl dark:bg-gray-900">
+            <dl class="space-y-2">
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Articles</dt>
+
+                <dd class="text-3xl md:text-4xl dark:text-white">{{ potentials.stockS }}</dd>
+
+                <dd class="flex items-center space-x-1 text-sm font-medium text-{{ (percentStock > 0)?'green':'red' }}-500 dark:text-{{ (percentStock > 0)?'green':'red' }}-400">
+                    <span>{{ percentStock|abs|number_format(2) }}% increase</span>
+
+                    <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                              d="M17.25 15.25V6.75H8.75"></path>
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                              d="M17 7L6.75 17.25"></path>
+                    </svg>
+                </dd>
+            </dl>
+        </div>
+
+        <div class="p-6 bg-white shadow rounded-2xl dark:bg-gray-900">
+            <dl class="space-y-2">
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Potentiel</dt>
+
+                <dd class="text-3xl md:text-4xl dark:text-white">{{ (potentials.potentielS / 1000)|number_format(0, ',', ' ') }} k</dd>
+
+                <dd class="flex items-center space-x-1 text-sm font-medium text-{{ (percentPotential > 0)?'green':'red' }}-500 dark:text-{{ (percentPotential > 0)?'green':'red' }}-400">
+                    <span>{{ percentPotential|abs|number_format(2) }}% increase</span>
+
+                    <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                              d="M17.25 8.75V17.25H8.75"></path>
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                              d="M17 17L6.75 6.75"></path>
+                    </svg>
+                </dd>
+            </dl>
+        </div>
+    </section>
+</div>

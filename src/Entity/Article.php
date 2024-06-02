@@ -46,10 +46,14 @@ class Article
     #[ORM\OneToMany(targetEntity: Movement::class, mappedBy: 'article', orphanRemoval: true)]
     private Collection $movements;
 
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $createdAt = null;
+
     public function __construct()
     {
         $this->sales = new ArrayCollection();
         $this->movements = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -190,6 +194,18 @@ class Article
                 $movement->setArticle(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(?\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }
