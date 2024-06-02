@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Article;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Exception;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -17,7 +18,7 @@ class ArticleRepository extends ServiceEntityRepository
     }
 
     /**
-     * @throws \Doctrine\DBAL\Exception
+     * @throws Exception
      */
     public function getArticles(): array
     {
@@ -46,34 +47,116 @@ class ArticleRepository extends ServiceEntityRepository
             ORDER BY a.label ASC;
         ";
 
+        return $this->fetchAll($sql);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getSalePotential(): array
+    {
+        $sql = "
+            SELECT 
+                SUM(IF(
+                    IF(
+                        COALESCE(mb.verif1,0) = 0, 
+                        IF(
+                            WEEK(a.created_at, 1) < WEEK(CURDATE(), 1), 
+                            a.in_stock, 
+                            0
+                        ), 
+                        COALESCE(mb.stock_after, 0)
+                    ) > 0, 
+                    1, 
+                    0
+                )) AS 'stockS1', 
+                SUM(a.sell_price * IF(
+                    COALESCE(mb.verif1,0) = 0, 
+                    IF(
+                        WEEK(a.created_at, 1) < WEEK(CURDATE(), 1), 
+                        a.in_stock, 
+                        0
+                    ), 
+                    COALESCE(mb.stock_after, 0)
+                )) AS 'potentielS1',
+                SUM(IF(
+                    IF(
+                        COALESCE(mb.verif1, 0) != COALESCE(m.verif2, 0),
+                        COALESCE(mb.stock_after, 0),
+                        IF(
+                            COALESCE(m.verif2, 0) = 0,
+                            IF(
+                                WEEK(a.created_at, 1) = WEEK(CURDATE(), 1), 
+                                a.in_stock, 
+                                0
+                            ), 
+                            COALESCE(m.stock_after, 0)
+                        )
+                    ) > 0, 
+                    1, 
+                    0
+                )) AS 'stockS',
+                SUM(a.sell_price * IF(
+                    COALESCE(mb.verif1, 0) != COALESCE(m.verif2, 0),
+                    COALESCE(mb.stock_after, 0),
+                    IF(
+                        COALESCE(m.verif2, 0) = 0,
+                        IF(
+                            WEEK(a.created_at, 1) = WEEK(CURDATE(), 1), 
+                            a.in_stock, 
+                            0
+                        ), 
+                        COALESCE(m.stock_after, 0)
+                    )
+                )) AS 'potentielS'
+            FROM article a
+            LEFT JOIN (
+                SELECT m1.article_id, m1.stock_after, (
+                    SELECT COUNT(m2.id)
+                    FROM movement m2
+                    WHERE m2.article_id = m1.article_id
+                ) AS 'verif1'
+                FROM movement m1
+                WHERE WEEK(m1.recorded_at, 1) < WEEK(CURDATE(), 1)
+                AND m1.id = (
+                    SELECT m2.id
+                    FROM movement m2
+                    WHERE m2.article_id = m1.article_id
+                    AND WEEK(m2.recorded_at, 1) < WEEK(CURDATE(), 1)
+                    ORDER BY m2.id DESC
+                    LIMIT 1
+                )
+            ) mb ON a.id = mb.article_id
+            LEFT JOIN (
+                SELECT m3.article_id, m3.stock_after, (
+                    SELECT COUNT(m4.id)
+                    FROM movement m4
+                    WHERE m4.article_id = m3.article_id
+                ) AS 'verif2'
+                FROM movement m3
+                WHERE WEEK(m3.recorded_at, 1) = WEEK(CURDATE(), 1)
+                AND m3.id = (
+                    SELECT m4.id
+                    FROM movement m4
+                    WHERE m4.article_id = m3.article_id
+                    AND WEEK(m4.recorded_at, 1) = WEEK(CURDATE(), 1)
+                    ORDER BY m4.id DESC
+                    LIMIT 1
+                )
+            ) m ON a.id = m.article_id;
+        ";
+
+        return $this->fetchAll($sql);
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function fetchAll(string $sql): array
+    {
         $conn = $this->getEntityManager()->getConnection();
         $stmt = $conn->executeQuery($sql);
 
         return $stmt->fetchAllAssociative();
     }
-
-    //    /**
-    //     * @return Article[] Returns an array of Article objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('a')
-    //            ->andWhere('a.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('a.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?Article
-    //    {
-    //        return $this->createQueryBuilder('a')
-    //            ->andWhere('a.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
 }

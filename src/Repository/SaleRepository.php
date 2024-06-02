@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Sale;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Exception;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -16,28 +17,23 @@ class SaleRepository extends ServiceEntityRepository
         parent::__construct($registry, Sale::class);
     }
 
-    //    /**
-    //     * @return Sale[] Returns an array of Sale objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('s')
-    //            ->andWhere('s.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('s.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * @throws Exception
+     */
+    public function calcAllSales(): array
+    {
+        $sql = "
+            SELECT 
+                SUM((a.sell_price - COALESCE(s.promo, 0)) * (s.qty - s.qty_returned)) AS 'total',
+                SUM(IF(s.received = 1, (a.sell_price - COALESCE(s.promo, 0)) * (s.qty - s.qty_returned), 0)) AS 'totalEncaisse',
+                SUM(IF(s.received != 1, (a.sell_price - COALESCE(s.promo, 0)) * (s.qty - s.qty_returned), 0)) AS 'totalNonEncaisse'
+            FROM sale s
+            INNER JOIN article a ON a.id = s.item_id;
+        ";
 
-    //    public function findOneBySomeField($value): ?Sale
-    //    {
-    //        return $this->createQueryBuilder('s')
-    //            ->andWhere('s.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->executeQuery($sql);
+
+        return $stmt->fetchAllAssociative();
+    }
 }

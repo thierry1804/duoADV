@@ -8,6 +8,7 @@ use App\Repository\ExpenseRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -94,5 +95,18 @@ class ExpenseController extends AbstractController
         }
 
         return $this->redirectToRoute('app_expense_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/{id}/edit/payment-status', name: 'app_expense_edit_payment_status', methods: ['GET', 'POST'])]
+    public function editPaymentStatus(Expense $expense, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $paid = !$expense->isPaid();
+        if ($expense->getLettrage() === null) {
+            $expense->setPaid($paid);
+            $entityManager->persist($expense);
+            $entityManager->flush();
+        }
+
+        return new JsonResponse(['status' => $paid]);
     }
 }
