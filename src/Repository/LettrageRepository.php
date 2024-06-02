@@ -27,7 +27,7 @@ class LettrageRepository extends ServiceEntityRepository
                 l.id, 
                 l.label, 
                 (
-                    SELECT COALESCE(SUM(IF(s.promo > 0, a.sell_price - a.sell_price, a.sell_price) * (s.qty - s.qty_returned)), 0)
+                    SELECT COALESCE(SUM((a.sell_price - COALESCE(s.promo, 0)) * (s.qty - s.qty_returned)), 0)
                     FROM sale s
                     INNER JOIN article a ON a.id = s.item_id
                     WHERE s.lettrage_id = l.id
