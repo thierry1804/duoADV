@@ -3,5 +3,38 @@
 {% block title %}Hello DashboardController!{% endblock %}
 
 {% block body %}
-{{ render(path('app_dashboard_potential')) }}
+    {# render(path('app_dashboard_potential')) #}
+    <div class="text-sm">
+        <div class="space-y-5 tabs">
+            <div class="border-b border-b-gray-200">
+                <ul class="-mb-px flex items-center gap-4 text-sm font-medium">
+                    <li class="flex-1">
+                        <a href="#recap" id="for-sales"
+                           class="flex items-center justify-center gap-2 px-1 py-3 hover:text-blue-700 relative text-blue-700 after:absolute after:left-0 after:bottom-0 after:h-0.5 after:w-full after:bg-blue-700"
+                        >Récap</a>
+                    </li>
+                    <li class="flex-1">
+                        <a href="#sales" id="for-sales"
+                           class="flex items-center justify-center gap-2 px-1 py-3 hover:text-blue-700 text-gray-500"
+                        >Ventes</a>
+                    </li>
+                    <li class="flex-1">
+                        <a href="#expenses" id="for-expenses"
+                           class="flex items-center justify-center gap-2 px-1 py-3 hover:text-blue-700 text-gray-500">
+                            Dépenses
+                        </a>
+                    </li>
+                    <li class="flex-1">
+                        <a href="#stock" id="for-stock"
+                           class="flex items-center justify-center gap-2 px-1 py-3 hover:text-blue-700 text-gray-500">
+                            Stock
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="tab-content mt-4">
+            {{ render(path('app_dashboard_operation')) }}
+        </div>
+    </div>
 {% endblock %}
