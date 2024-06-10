@@ -81,6 +81,7 @@
                                 <span class="-mr-1 font-medium">Dashboard</span>
                             </a>
                         </li>
+                        {% if is_granted('ROLE_ADMIN') %}
                         <li>
                             <a
                                     href="{{ path('app_lettrage_index') }}"
@@ -178,6 +179,7 @@
                                 <span class="group-hover:text-gray-700 dark:group-hover:text-white">Ventes</span>
                             </a>
                         </li>
+                        {% endif %}
                     </ul>
                 </div>
 
@@ -242,6 +244,7 @@
                                                 <span class="-mr-1 font-medium">Dashboard</span>
                                             </a>
                                         </li>
+                                        {% if is_granted('ROLE_ADMIN') %}
                                         <li>
                                             <a
                                                     href="{{ path('app_lettrage_index') }}"
@@ -339,6 +342,7 @@
                                                 <span class="group-hover:text-gray-700 dark:group-hover:text-white">Ventes</span>
                                             </a>
                                         </li>
+                                        {% endif %}
                                     </menu>
                                 </div>
                             </div>
