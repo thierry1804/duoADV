@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Sale;
 use App\Form\SaleType;
 use App\Repository\SaleRepository;
+use App\Service\StockService;
 use Doctrine\DBAL\Exception;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,6 +21,9 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_ADMIN')]
 class SaleController extends AbstractController
 {
+    public function __construct(private StockService $stockService)
+    {
+    }
     /**
      * @throws Exception
      */
@@ -60,12 +64,7 @@ class SaleController extends AbstractController
             $entityManager->persist($sale);
             $entityManager->flush();
 
-            $process = new Process(['php', '../bin/console', 'app:historize-stock']);
-            $process->run();
-
-            if (!$process->isSuccessful()) {
-                throw new ProcessFailedException($process);
-            }
+            $this->stockService->historizeStock();
 
             return $this->redirectToRoute('app_sale_index', [], Response::HTTP_SEE_OTHER);
         }
