@@ -149,6 +149,24 @@ class ArticleRepository extends ServiceEntityRepository
         return $this->fetchAll($sql);
     }
 
+    public function getStockRecap(array $articles, array $movements): array
+    {
+        $stockRecap = [];
+        foreach ($articles as $article) {
+            $id = $article['id'];
+            $stockRecap[$article['id']] = [
+                'label' => $article['label'],
+                'inStock' => $article['inStock'],
+                'status' => $article['status'],
+                'movements' => array_filter($movements, function($item) use ($id) {
+                    return $item->getArticle()->getId() == $id;
+                }),
+            ];
+        }
+
+        return $stockRecap;
+    }
+
     /**
      * @throws Exception
      */

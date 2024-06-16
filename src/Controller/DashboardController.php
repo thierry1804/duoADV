@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Repository\ArticleRepository;
 use App\Repository\ExpenseRepository;
 use App\Repository\LettrageRepository;
+use App\Repository\MovementRepository;
 use App\Repository\SaleRepository;
 use Doctrine\DBAL\Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -101,6 +102,21 @@ class DashboardController extends AbstractController
         );
         return $this->render('dashboard/_expense_recap.html.twig', [
             'expenses' => $expenseRecap,
+        ]);
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Route('/dash/stock', name: 'app_dashboard_stock')]
+    public function getStockRecap(ArticleRepository $repository, MovementRepository $movementRepository): Response
+    {
+        $stockRecap = $repository->getStockRecap(
+            $repository->getArticles(),
+            $movementRepository->findAll()
+        );
+        return $this->render('dashboard/_stock_recap.html.twig', [
+            'stocks' => $stockRecap,
         ]);
     }
 }

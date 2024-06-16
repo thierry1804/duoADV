@@ -44,6 +44,9 @@
             {% if tab == 'depenses' %}
                 {{ render(path('app_dashboard_expenses')) }}
             {% endif %}
+            {% if tab == 'stock' %}
+                {{ render(path('app_dashboard_stock')) }}
+            {% endif %}
         </div>
     </div>
 {% endblock %}
