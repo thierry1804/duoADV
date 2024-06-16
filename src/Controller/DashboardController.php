@@ -119,4 +119,61 @@ class DashboardController extends AbstractController
             'stocks' => $stockRecap,
         ]);
     }
+
+    /**
+     * @throws Exception
+     */
+    #[Route('/dash/chart/se', name: 'app_dashboard_chart_se')]
+    public function getChartSE(MovementRepository $repository): Response
+    {
+        $movements = $repository->getSalesAndExpenses();
+        $labels = [];
+        $dataIn = [];
+        $dataOut = [];
+
+        foreach ($movements as $movement) {
+            $labels[] = $movement['date'];
+            $dataIn[] = $movement['cash_in'];
+            $dataOut[] = $movement['cash_out'];
+        }
+
+        $chart = new \QuickChart(
+            [
+                'width' => 800,
+                'height' => 400,
+            ]
+        );
+
+        $chart->setConfig('{
+            type: "line",
+            data: {
+                labels: ' . json_encode($labels) . ',
+                datasets: [
+                    {
+                        label: "Ventes",
+                        data: ' . json_encode($dataIn) . ',
+                        borderColor: "rgba(75, 192, 192, 1)",
+                        backgroundColor: "rgba(75, 192, 192, 0.2)",
+                    },
+                    {
+                        label: "Dépenses",
+                        data: ' . json_encode($dataOut) . ',
+                        borderColor: "rgba(255, 99, 132, 1)",
+                        backgroundColor: "rgba(255, 99, 132, 0.2)",
+                    },
+                ],
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                    },
+                },
+            },
+        }');
+
+        return $this->render('dashboard/_chart_se.html.twig', [
+            'chart' => $chart->getUrl(),
+        ]);
+    }
 }
