@@ -144,4 +144,48 @@ class DashboardController extends AbstractController
             'chart' => $chartUrl . '&width=800&height=400&devicePixelRatio=1.0&format=png&version=2.9.3',
         ]);
     }
+
+    /**
+     * @throws Exception
+     */
+    #[Route('/dash/chart/s', name: 'app_dashboard_chart_s')]
+    public function getChartS(MovementRepository $repository): Response
+    {
+        $movements = $repository->getSalesAndExpenses();
+        $labels = [];
+        $dataIn = [];
+
+        foreach ($movements as $movement) {
+            $labels[] = $movement['date'];
+            $dataIn[] = $movement['cash_in'];
+        }
+
+        $chartUrl = 'https://quickchart.io/chart?chart={type: "line",data: {labels: ' . json_encode($labels) . ',datasets: [{label: "Ventes",data: ' . json_encode($dataIn) . ',borderColor: "rgba(75, 192, 192, 1)",backgroundColor: "rgba(75, 192, 192, 0.2)",},],},options: {scales: {y: {beginAtZero: true,},},},}';
+
+        return $this->render('dashboard/_chart_se.html.twig', [
+            'chart' => $chartUrl . '&width=800&height=400&devicePixelRatio=1.0&format=png&version=2.9.3',
+        ]);
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Route('/dash/chart/e', name: 'app_dashboard_chart_e')]
+    public function getChartE(MovementRepository $repository): Response
+    {
+        $movements = $repository->getSalesAndExpenses();
+        $labels = [];
+        $dataOut = [];
+
+        foreach ($movements as $movement) {
+            $labels[] = $movement['date'];
+            $dataOut[] = $movement['cash_out'];
+        }
+
+        $chartUrl = 'https://quickchart.io/chart?chart={type: "line",data: {labels: ' . json_encode($labels) . ',datasets: [{label: "Dépenses",data: ' . json_encode($dataOut) . ',borderColor: "rgba(255, 99, 132, 1)",backgroundColor: "rgba(255, 99, 132, 0.2)",},],},options: {scales: {y: {beginAtZero: true,},},},}';
+
+        return $this->render('dashboard/_chart_se.html.twig', [
+            'chart' => $chartUrl . '&width=800&height=400&devicePixelRatio=1.0&format=png&version=2.9.3',
+        ]);
+    }
 }

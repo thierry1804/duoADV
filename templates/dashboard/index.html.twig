@@ -40,9 +40,11 @@
                 {{ render(path('app_dashboard_operation')) }}
             {% endif %}
             {% if tab == 'ventes' %}
+                {{ render(path('app_dashboard_chart_s')) }}
                 {{ render(path('app_dashboard_sales')) }}
             {% endif %}
             {% if tab == 'depenses' %}
+                {{ render(path('app_dashboard_chart_e')) }}
                 {{ render(path('app_dashboard_expenses')) }}
             {% endif %}
             {% if tab == 'stock' %}
