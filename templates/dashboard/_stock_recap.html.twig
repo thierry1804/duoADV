@@ -25,7 +25,7 @@
             <td colspan="3">
                 <table class="border-collapse table-auto w-full text-xs table-striped">
                     <thead>
-                    <tr class="bg-sky-200">
+                    <tr class="bg-black">
                         <th class="border-b dark:border-slate-600 font-medium p-2 pl-8 px-3 text-slate-400 dark:text-slate-200 text-left">Date</th>
                         <th class="border-b dark:border-slate-600 font-medium p-2 pl-8 px-3 text-slate-400 dark:text-slate-200 text-left">Avant</th>
                         <th class="border-b dark:border-slate-600 font-medium p-2 pl-8 px-3 text-slate-400 dark:text-slate-200 text-left">Qté</th>
@@ -39,6 +39,12 @@
                             <td class="border-b border-slate-100 dark:border-slate-700 p-2 pl-8 text-slate-500 dark:text-slate-400">{{ movement.stockBefore }}</td>
                             <td class="border-b border-slate-100 dark:border-slate-700 p-2 pl-8 text-slate-500 dark:text-slate-400">{{ movement.qty }}</td>
                             <td class="border-b border-slate-100 dark:border-slate-700 p-2 pl-8 text-slate-500 dark:text-slate-400 text-nowrap">{{ movement.stockAfter }}</td>
+                        </tr>
+                    {% else %}
+                        <tr class="text-xs">
+                            <td colspan="4" class="border-b border-slate-100 dark:border-slate-700 p-2 pl-8 text-slate-500 dark:text-slate-400">
+                                no records found
+                            </td>
                         </tr>
                     {% endfor %}
                     </tbody>
