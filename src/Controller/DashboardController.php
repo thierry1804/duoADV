@@ -8,6 +8,7 @@ use App\Repository\LettrageRepository;
 use App\Repository\MovementRepository;
 use App\Repository\SaleRepository;
 use Doctrine\DBAL\Exception;
+use QuickChart;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -137,7 +138,7 @@ class DashboardController extends AbstractController
             $dataOut[] = $movement['cash_out'];
         }
 
-        $chart = new \QuickChart(
+        $chart = new QuickChart(
             [
                 'width' => 800,
                 'height' => 400,
