@@ -138,43 +138,10 @@ class DashboardController extends AbstractController
             $dataOut[] = $movement['cash_out'];
         }
 
-        $chart = new QuickChart(
-            [
-                'width' => 800,
-                'height' => 400,
-            ]
-        );
-
-        $chart->setConfig('{
-            type: "line",
-            data: {
-                labels: ' . json_encode($labels) . ',
-                datasets: [
-                    {
-                        label: "Ventes",
-                        data: ' . json_encode($dataIn) . ',
-                        borderColor: "rgba(75, 192, 192, 1)",
-                        backgroundColor: "rgba(75, 192, 192, 0.2)",
-                    },
-                    {
-                        label: "Dépenses",
-                        data: ' . json_encode($dataOut) . ',
-                        borderColor: "rgba(255, 99, 132, 1)",
-                        backgroundColor: "rgba(255, 99, 132, 0.2)",
-                    },
-                ],
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                    },
-                },
-            },
-        }');
+        $chartUrl = 'https://quickchart.io/chart?chart={type: "line",data: {labels: ' . json_encode($labels) . ',datasets: [{label: "Ventes",data: ' . json_encode($dataIn) . ',borderColor: "rgba(75, 192, 192, 1)",backgroundColor: "rgba(75, 192, 192, 0.2)",},{label: "Dépenses",data: ' . json_encode($dataOut) . ',borderColor: "rgba(255, 99, 132, 1)",backgroundColor: "rgba(255, 99, 132, 0.2)",},],},options: {scales: {y: {beginAtZero: true,},},},}';
 
         return $this->render('dashboard/_chart_se.html.twig', [
-            'chart' => $chart->getUrl(),
+            'chart' => $chartUrl . '&width=800&height=400&devicePixelRatio=1.0&format=png&version=2.9.3',
         ]);
     }
 }

@@ -36,6 +36,7 @@
         </div>
         <div class="tab-content mt-4">
             {% if tab == 'recap' %}
+                {{ render(path('app_dashboard_chart_se')) }}
                 {{ render(path('app_dashboard_operation')) }}
             {% endif %}
             {% if tab == 'ventes' %}
