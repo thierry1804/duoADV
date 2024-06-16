@@ -25,7 +25,7 @@ class ArticleController extends AbstractController
     #[Route('/update-price', name: 'app_article_update_price')]
     public function updateSellPrice(ArticleRepository $articleRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
-        $articles = $articleRepository->findBy(['sellPrice' => 0]);
+        $articles = $articleRepository->findBy(['sellPrice' => 0], ['label' => 'ASC']);
         if ($request->isMethod('POST')) {
             $data = $request->request->all();
             $data = array_filter($data['article'], function($dataArticle) {
