@@ -1,32 +1,33 @@
 {% extends 'layout.html.twig' %}
 
-{% block title %}Hello DashboardController!{% endblock %}
+{% block title %}Dashboard{% endblock %}
 
 {% block body %}
-    {# render(path('app_dashboard_potential')) #}
+    {% set activeTab = 'flex items-center justify-center gap-2 px-1 py-3 hover:text-blue-700 relative text-blue-700 after:absolute after:left-0 after:bottom-0 after:h-0.5 after:w-full after:bg-blue-700' %}
+    {% set inactiveTab = 'flex items-center justify-center gap-2 px-1 py-3 hover:text-blue-700 text-gray-500' %}
     <div class="text-sm">
         <div class="space-y-5 tabs">
             <div class="border-b border-b-gray-200">
                 <ul class="-mb-px flex items-center gap-4 text-sm font-medium">
                     <li class="flex-1">
-                        <a href="#recap" id="for-sales"
-                           class="flex items-center justify-center gap-2 px-1 py-3 hover:text-blue-700 relative text-blue-700 after:absolute after:left-0 after:bottom-0 after:h-0.5 after:w-full after:bg-blue-700"
+                        <a href="{{ path('app_dashboard', {tab: 'recap'}) }}" id="for-recap"
+                           class="{{ (tab == 'recap')?activeTab:inactiveTab }}"
                         >Récap</a>
                     </li>
                     <li class="flex-1">
-                        <a href="#sales" id="for-sales"
-                           class="flex items-center justify-center gap-2 px-1 py-3 hover:text-blue-700 text-gray-500"
+                        <a href="{{ path('app_dashboard', {tab: 'ventes'}) }}" id="for-sales"
+                           class="{{ (tab == 'ventes')?activeTab:inactiveTab }}"
                         >Ventes</a>
                     </li>
                     <li class="flex-1">
-                        <a href="#expenses" id="for-expenses"
-                           class="flex items-center justify-center gap-2 px-1 py-3 hover:text-blue-700 text-gray-500">
+                        <a href="{{ path('app_dashboard', {tab: 'depenses'}) }}" id="for-expenses"
+                           class="{{ (tab == 'depenses')?activeTab:inactiveTab }}">
                             Dépenses
                         </a>
                     </li>
                     <li class="flex-1">
-                        <a href="#stock" id="for-stock"
-                           class="flex items-center justify-center gap-2 px-1 py-3 hover:text-blue-700 text-gray-500">
+                        <a href="{{ path('app_dashboard', {tab: 'stock'}) }}" id="for-stock"
+                           class="{{ (tab == 'stock')?activeTab:inactiveTab }}">
                             Stock
                         </a>
                     </li>
@@ -34,7 +35,15 @@
             </div>
         </div>
         <div class="tab-content mt-4">
-            {{ render(path('app_dashboard_operation')) }}
+            {% if tab == 'recap' %}
+                {{ render(path('app_dashboard_operation')) }}
+            {% endif %}
+            {% if tab == 'ventes' %}
+                {{ render(path('app_dashboard_sales')) }}
+            {% endif %}
+            {% if tab == 'depenses' %}
+                {{ render(path('app_dashboard_expenses')) }}
+            {% endif %}
         </div>
     </div>
 {% endblock %}

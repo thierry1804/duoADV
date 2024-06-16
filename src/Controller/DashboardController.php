@@ -13,18 +13,18 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class DashboardController extends AbstractController
 {
-    #[Route('/', name: 'app_dashboard')]
-    public function index(): Response
+    #[Route('/dashboard/{tab}', name: 'app_dashboard')]
+    public function index(string $tab = 'recap'): Response
     {
         return $this->render('dashboard/index.html.twig', [
-            'controller_name' => 'DashboardController',
+            'tab' => $tab,
         ]);
     }
 
     /**
      * @throws Exception
      */
-    #[Route('/dashboard/operations', name: 'app_dashboard_operation')]
+    #[Route('/dash/operations', name: 'app_dashboard_operation')]
     public function getOperationRecap(LettrageRepository $lettrageRepository,
                                       SaleRepository $saleRepository,
                                       ExpenseRepository $expenseRepository,
@@ -60,7 +60,7 @@ class DashboardController extends AbstractController
     /**
      * @throws Exception
      */
-    #[Route('/dashboard/potential', name: 'app_dashboard_potential')]
+    #[Route('/dash/potential', name: 'app_dashboard_potential')]
     public function getSalePotential(ArticleRepository $repository): Response
     {
         $salePotential = $repository->getSalePotential()[0];
@@ -77,13 +77,30 @@ class DashboardController extends AbstractController
     /**
      * @throws Exception
      */
-    #[Route('/dashboard/sales', name: 'app_dashboard_sales')]
+    #[Route('/dash/sales', name: 'app_dashboard_sales')]
     public function getSaleRecap(SaleRepository $repository): Response
     {
-        $saleRecap = $repository->buildRecap($repository->recapSales(),
-            $repository->findBy([], ['recordedAt' => 'DESC']));
+        $saleRecap = $repository->buildRecap(
+            $repository->recapSales(),
+            $repository->findBy([], ['recordedAt' => 'DESC'])
+        );
         return $this->render('dashboard/_sale_recap.html.twig', [
             'sales' => $saleRecap,
+        ]);
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Route('/dash/expenses', name: 'app_dashboard_expenses')]
+    public function getExpenseRecap(ExpenseRepository $repository): Response
+    {
+        $expenseRecap = $repository->buildRecap(
+            $repository->calcAllAbsoluteExpenses(),
+            $repository->findBy([], ['recordedAt' => 'DESC'])
+        );
+        return $this->render('dashboard/_expense_recap.html.twig', [
+            'expenses' => $expenseRecap,
         ]);
     }
 }

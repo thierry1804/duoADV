@@ -31,14 +31,3 @@ $('#dashboard-sales tr[id^="sale-"]').on('click', function() {
     $('tr#detail-' + id).toggleClass('hidden border-2 border-sky-300');
     $('tr[id^="detail-"]:not("#detail-' + id + '")').addClass('hidden').removeClass('border-2 border-sky-300');
 });
-
-$('.tabs ul li a').on('click', function(e) {
-    e.preventDefault();
-
-    let cible = $(this).attr('href');
-    $('.tab-content').addClass('hidden');
-    $(cible).removeClass('hidden');
-
-    $('.tabs ul li a').prop('class', 'flex items-center justify-center gap-2 px-1 py-3 hover:text-blue-700 text-gray-500 transition-all transform');
-    $(this).prop('class', 'flex items-center justify-center gap-2 px-1 py-3 hover:text-blue-700 relative text-blue-700 after:absolute after:left-0 after:bottom-0 after:h-0.5 after:w-full after:bg-blue-700 transition-all transform');
-});
