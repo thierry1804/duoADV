@@ -1,0 +1,52 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Maj prix de vente articles{% endblock %}
+
+{% block body %}
+    <h1 class="font-bold">
+        Maj des prix de vente des articles
+        <a href="{{ path('app_article_index') }}">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 inline-block">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 0 3.75H5.625a1.875 1.875 0 0 1 0-3.75Z" />
+            </svg>
+        </a>
+    </h1>
+
+    <form name="maj_price" method="post">
+        <table class="border-collapse table-auto w-full text-sm">
+            <thead>
+            <tr>
+                <th class="border-b dark:border-slate-600 font-medium p-2 pl-8 pt-0 pb-3 text-slate-400 dark:text-slate-200 text-left">Réf.</th>
+                <th class="border-b dark:border-slate-600 font-medium p-2 pl-8 pt-0 pb-3 text-slate-400 dark:text-slate-200 text-left">Article</th>
+                <th class="border-b dark:border-slate-600 font-medium p-2 pl-8 pt-0 pb-3 text-slate-400 dark:text-slate-200 text-right">Prix de vente</th>
+            </tr>
+            </thead>
+            <tbody class="bg-white dark:bg-slate-800">
+            {% for article in articles %}
+                <tr>
+                    <td class="border-b border-slate-100 dark:border-slate-700 p-2 pl-8 text-slate-500 dark:text-slate-400">
+                        #{{ article.id }}
+                        <input type="hidden" name="article[{{ article.id }}][id]" value="{{ article.id }}" />
+                    </td>
+                    <td class="border-b border-slate-100 dark:border-slate-700 p-2 pl-8 text-slate-500 dark:text-slate-400">
+                        {{ article.label }}
+                    </td>
+                    <td class="border-b border-slate-100 dark:border-slate-700 p-2 pl-8 text-slate-500 dark:text-slate-400">
+                        <input
+                                type="number"
+                                name="article[{{ article.id }}][sellprice]"
+                                class="focus:outline-none block w-full rounded-md border border-gray-200 dark:border-gray-600 bg-transparent px-2 py-1 text-gray-600 transition duration-300 invalid:ring-2 invalid:ring-red-400 focus:ring-2 focus:ring-cyan-300" />
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="3" class="border-b border-slate-100 dark:border-slate-700 p-4 pl-8 text-slate-500 dark:text-slate-400">no records found</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <button type="submit" class="rounded bg-sky-400 relative flex h-11 w-full items-center justify-center px-6 before:absolute before:inset-0 before:rounded-full before:bg-primary before:transition before:duration-300 hover:before:scale-105 active:duration-75 active:before:scale-95">
+            <span class="relative text-base font-semibold text-white dark:text-dark">Enregistrer</span>
+        </button>
+    </form>
+{% endblock %}

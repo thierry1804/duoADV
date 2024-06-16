@@ -22,6 +22,29 @@ class ArticleController extends AbstractController
         ]);
     }
 
+    #[Route('/update-price', name: 'app_article_update_price')]
+    public function updateSellPrice(ArticleRepository $articleRepository, Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $articles = $articleRepository->findBy(['sellPrice' => 0]);
+        if ($request->isMethod('POST')) {
+            $data = $request->request->all();
+            $data = array_filter($data['article'], function($dataArticle) {
+                return $dataArticle['sellprice'] > 0;
+            });
+
+            foreach ($data as $articleData) {
+                $article = $articleRepository->find($articleData['id']);
+                $article->setSellPrice($articleData['sellprice']);
+                $entityManager->persist($article);
+            }
+            $entityManager->flush();
+            return $this->redirectToRoute('app_article_index');
+        }
+        return $this->render('article/maj_sell_price.html.twig', [
+            'articles' => $articles,
+        ]);
+    }
+
     #[Route('/new', name: 'app_article_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -68,7 +91,7 @@ class ArticleController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_article_delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'app_article_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function delete(Request $request, Article $article, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$article->getId(), $request->getPayload()->get('_token'))) {
