@@ -47,7 +47,7 @@
     </thead>
     <tbody>
     {% for recap in sales.recap %}
-        <tr id="sale-{{ loop.index }}" class="cursor-pointer">
+        <tr id="sale-{{ loop.index }}" class="cursor-pointer {% if loop.index is divisible by(2) %}bg-slate-300{% endif %}">
             <td class="border-b border-slate-100 dark:border-slate-700 p-2 pl-8 text-slate-500 dark:text-slate-400">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 hover:rotate-90 transition-all transform">
                     <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />

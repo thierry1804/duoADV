@@ -156,6 +156,7 @@ class ArticleRepository extends ServiceEntityRepository
             $id = $article['id'];
             $stockRecap[$article['id']] = [
                 'label' => $article['label'],
+                'sellPrice' => $article['sellPrice'],
                 'inStock' => $article['inStock'],
                 'status' => $article['status'],
                 'movements' => array_filter($movements, function($item) use ($id) {
