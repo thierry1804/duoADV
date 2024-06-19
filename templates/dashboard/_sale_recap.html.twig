@@ -1,0 +1,115 @@
+<div class="w-full my-2">
+    <div class="grid md:grid-cols-3 sm:grid-cols-1 gap-2 text-xs">
+        <div class="content-center">
+            <div class="h-full space-y-6 group p-4 rounded-xl bg-white border border-gray-200/50 dark:shadow-none dark:border-gray-700 dark:bg-gray-800 bg-opacity-50 shadow-2xl shadow-gray-600/10">
+                <div>
+                    <h5 class="text-center text-xl text-gray-600 dark:text-gray-300">Total des ventes</h5>
+                    <div class="mt-2 flex justify-center gap-4">
+                        <h3 class="text-3xl font-bold text-gray-700 dark:text-white text-nowrap">{{ sales.totalAmount|number_format(0, ",", " ") }} Ar</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class=content-center">
+            <div class="h-full space-y-6 group p-4 rounded-xl bg-white border border-gray-200/50 dark:shadow-none dark:border-gray-700 dark:bg-gray-800 bg-opacity-50 shadow-2xl shadow-gray-600/10">
+                <div>
+                    <h5 class="text-center text-xl text-gray-600 dark:text-gray-300">Total des ventes encaissées</h5>
+                    <div class="mt-2 flex justify-center gap-4">
+                        <h3 class="text-3xl font-bold text-gray-700 dark:text-white text-nowrap">{{ sales.totalReceived|number_format(0, ",", " ") }} Ar</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-center">
+            <div class="h-full space-y-6 group p-4 rounded-xl bg-white border border-gray-200/50 dark:shadow-none dark:border-gray-700 dark:bg-gray-800 bg-opacity-50 shadow-2xl shadow-gray-600/10">
+                <div>
+                    <h5 class="text-center text-xl text-gray-600 dark:text-gray-300">Total des ventes non encaissées</h5>
+                    <div class="mt-2 flex justify-center gap-4">
+                        <h3 class="text-3xl font-bold text-gray-700 dark:text-white text-nowrap">{{ sales.totalUnReceived|number_format(0, ",", " ") }} Ar</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<table id="dashboard-sales" class="border-collapse table-auto w-full text-sm">
+    <thead>
+        <tr>
+            <th class="border-b dark:border-slate-600 font-medium p-2 pl-8 pt-0 pb-3 text-slate-400 dark:text-slate-200 text-left"></th>
+            <th class="border-b dark:border-slate-600 font-medium p-2 pl-8 pt-0 pb-3 text-slate-400 dark:text-slate-200 text-left">Date</th>
+            <th class="border-b dark:border-slate-600 font-medium p-2 pl-8 pt-0 pb-3 text-slate-400 dark:text-slate-200 text-right">CA</th>
+            <th class="border-b dark:border-slate-600 font-medium p-2 pl-8 pt-0 pb-3 text-slate-400 dark:text-slate-200 text-right">Encaissées</th>
+            <th class="border-b dark:border-slate-600 font-medium p-2 pl-8 pt-0 pb-3 text-slate-400 dark:text-slate-200 text-right">Reste à encaisser</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for recap in sales.recap %}
+        <tr id="sale-{{ loop.index }}" class="cursor-pointer {% if loop.index is divisible by(2) %}bg-slate-300{% endif %}">
+            <td class="border-b border-slate-100 dark:border-slate-700 p-2 pl-8 text-slate-500 dark:text-slate-400">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 hover:rotate-90 transition-all transform">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                </svg>
+            </td>
+            <td class="border-b border-slate-100 dark:border-slate-700 p-2 pl-8 text-slate-500 dark:text-slate-400">
+                {{ recap.sold_on|date('d/m/Y') }}
+            </td>
+            <td class="border-b border-slate-100 dark:border-slate-700 p-2 pl-8 text-slate-500 dark:text-slate-400 text-right">
+                {{ recap.vente|number_format(2, ",", " ") }}
+            </td>
+            <td class="border-b border-slate-100 dark:border-slate-700 p-2 pl-8 text-slate-500 dark:text-slate-400 text-right">
+                {{ recap.vente_encaissee|number_format(2, ",", " ") }}
+            </td>
+            <td class="border-b border-slate-100 dark:border-slate-700 p-2 pl-8 text-slate-500 dark:text-slate-400 text-right">
+                {{ recap.reste_a_encaisser|number_format(2, ",", " ") }}
+            </td>
+        </tr>
+        <tr id="detail-sale-{{ loop.index }}" class="hidden bg-sky-100 transition-all transform">
+            <td colspan="5">
+                <table class="border-collapse table-auto w-full text-xs table-striped">
+                    <thead>
+                        <tr class="bg-sky-200">
+                            <th class="border-b dark:border-slate-600 font-medium p-2 pl-8 px-3 text-slate-400 dark:text-slate-200 text-left">Article</th>
+                            <th class="border-b dark:border-slate-600 font-medium p-2 pl-8 px-3 text-slate-400 dark:text-slate-200 text-left">Vente</th>
+                            <th class="border-b dark:border-slate-600 font-medium p-2 pl-8 px-3 text-slate-400 dark:text-slate-200 text-left">Retour</th>
+                            <th class="border-b dark:border-slate-600 font-medium p-2 pl-8 px-3 text-slate-400 dark:text-slate-200 text-left">PU</th>
+                            <th class="border-b dark:border-slate-600 font-medium p-2 pl-8 px-3 text-slate-400 dark:text-slate-200 text-left">Montant</th>
+                            <th class="border-b dark:border-slate-600 font-medium p-2 pl-8 px-3 text-slate-400 dark:text-slate-200 text-center">Lettrée</th>
+                            <th class="border-b dark:border-slate-600 font-medium p-2 pl-8 px-3 text-slate-400 dark:text-slate-200 text-center">Encaissée</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for sale in recap.sales %}
+                        <tr class="text-xs">
+                            <td class="border-b border-slate-100 dark:border-slate-700 p-2 pl-8 text-slate-500 dark:text-slate-400">{{ sale.item.label }}</td>
+                            <td class="border-b border-slate-100 dark:border-slate-700 p-2 pl-8 text-slate-500 dark:text-slate-400">{{ sale.qty }}</td>
+                            <td class="border-b border-slate-100 dark:border-slate-700 p-2 pl-8 text-slate-500 dark:text-slate-400">{{ sale.qtyReturned }}</td>
+                            <td class="border-b border-slate-100 dark:border-slate-700 p-2 pl-8 text-slate-500 dark:text-slate-400 text-nowrap">{{ ((sale.promo > 0)?sale.item.sellPrice - sale.promo:sale.item.sellPrice)|number_format(2, ",", " ") }}</td>
+                            <td class="border-b border-slate-100 dark:border-slate-700 p-2 pl-8 text-slate-500 dark:text-slate-400 text-nowrap">{{ ((sale.qty - sale.qtyReturned) * ((sale.promo > 0)?sale.item.sellPrice - sale.promo:sale.item.sellPrice))|number_format(2, ",", " ") }}</td>
+                            <td class="border-b border-slate-100 dark:border-slate-700 p-2 pl-8 text-slate-500 dark:text-slate-400 text-center">
+                                <input type="checkbox"
+                                        {{ (sale.lettrage)?'checked="checked"':'""' }}
+                                       disabled="disabled" />
+                            </td>
+                            <td class="border-b border-slate-100 dark:border-slate-700 p-2 pl-8 text-slate-500 dark:text-slate-400 text-center">
+                                <input type="checkbox"
+                                        {{ (sale.received)?'checked="checked"':'""' }}
+                                        disabled="disabled" />
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="4" class="border-b border-slate-100 dark:border-slate-700 p-2 pl-8 text-slate-500 dark:text-slate-400">
+                no records found
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
