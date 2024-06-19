@@ -18,3 +18,16 @@ $('.expense-paid, .sale-received').click(function() {
         }
     });
 });
+
+$('#dashboard-sales tr[id^="sale-"]').on('click', function() {
+    let id = $(this).attr('id');
+
+    $('tr#' + id + ' svg').toggleClass('rotate-90');
+    $('tr:not("#' + id + '") svg.rotate-90').removeClass('rotate-90');
+
+    $('tr#' + id).toggleClass('border-2 border-sky-300');
+    $('tr:not("#' + id + '")').removeClass('border-2 border-sky-300');
+
+    $('tr#detail-' + id).toggleClass('hidden border-2 border-sky-300');
+    $('tr[id^="detail-"]:not("#detail-' + id + '")').addClass('hidden').removeClass('border-2 border-sky-300');
+});

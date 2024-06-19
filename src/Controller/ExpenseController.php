@@ -12,8 +12,10 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/expense')]
+#[IsGranted('ROLE_ADMIN')]
 class ExpenseController extends AbstractController
 {
     #[Route('/', name: 'app_expense_index', methods: ['GET'])]
