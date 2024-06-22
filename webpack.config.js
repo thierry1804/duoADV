@@ -10,7 +10,7 @@ Encore
     // directory where compiled assets will be stored
     .setOutputPath('public/build/')
     // public path used by the web server to access the output path
-    .setPublicPath('/duo_adv/public/build')
+    .setPublicPath('/perso/duoADV/public/build')
     // only needed for CDN's or subdirectory deploy
     //.setManifestKeyPrefix('build/')
 
@@ -70,7 +70,7 @@ Encore
     //.enableIntegrityHashes(Encore.isProduction())
 
     // uncomment if you're having problems with a jQuery plugin
-    //.autoProvidejQuery()
+    .autoProvidejQuery()
 
     .enablePostCssLoader()
 ;
