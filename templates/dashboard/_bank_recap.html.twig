@@ -1,0 +1,52 @@
+{% set totalCredit = 0 %}
+{% set totalDebit = 0 %}
+{% set solde = 0 %}
+<table id="dashboard-sales" class="border-collapse table-auto w-full text-sm">
+    <thead>
+    <tr>
+        <th class="border-b dark:border-slate-600 font-medium p-2 pl-8 pt-0 pb-3 text-slate-400 dark:text-slate-200 text-left">Date</th>
+        <th class="border-b dark:border-slate-600 font-medium p-2 pl-8 pt-0 pb-3 text-slate-400 dark:text-slate-200 text-left">Libellé</th>
+        <th class="border-b dark:border-slate-600 font-medium p-2 pl-8 pt-0 pb-3 text-slate-400 dark:text-slate-200 text-left">Crédit</th>
+        <th class="border-b dark:border-slate-600 font-medium p-2 pl-8 pt-0 pb-3 text-slate-400 dark:text-slate-200 text-right">Débit</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for bnq in bank %}
+        <tr id="sale-{{ loop.index }}" class="cursor-pointer {% if loop.index is divisible by(2) %}bg-slate-300{% endif %}">
+            <td class="border-b border-slate-100 dark:border-slate-700 p-2 pl-8 text-slate-500 dark:text-slate-400">
+                {{ bnq.operationDate|date('d/m/Y') }}
+            </td>
+            <td class="border-b border-slate-100 dark:border-slate-700 p-2 pl-8 text-slate-500 dark:text-slate-400">
+                {{ bnq.label }}
+            </td>
+            <td class="border-b border-slate-100 dark:border-slate-700 p-2 pl-8 text-slate-500 dark:text-slate-400 text-right">
+                {{ bnq.credit|number_format(2, ',', ' ') }}
+            </td>
+            <td class="border-b border-slate-100 dark:border-slate-700 p-2 pl-8 text-slate-500 dark:text-slate-400 text-right">
+                {{ bnq.debit|number_format(2, ',', ' ') }}
+            </td>
+        </tr>
+        {% set totalCredit = totalCredit + bnq.credit %}
+        {% set totalDebit = totalDebit + bnq.debit %}
+    {% else %}
+        <tr>
+            <td colspan="4" class="border-b border-slate-100 dark:border-slate-700 p-2 pl-8 text-slate-500 dark:text-slate-400">
+                no records found
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    <tfoot>
+        <tr>
+            <th colspan="2" class="border-b border-slate-100 dark:border-slate-700 p-2 pl-8 text-slate-500 dark:text-slate-400 text-right">TOTAL</th>
+            <th class="border-b border-slate-100 dark:border-slate-700 p-2 pl-8 text-slate-500 dark:text-slate-400 text-right">{{ totalCredit|number_format(2, ',', ' ') }}</th>
+            <th class="border-b border-slate-100 dark:border-slate-700 p-2 pl-8 text-slate-500 dark:text-slate-400 text-right">{{ totalDebit|number_format(2, ',', ' ') }}</th>
+        </tr>
+        {% set solde = totalCredit - totalDebit %}
+        <tr>
+            <th colspan="2" class="border-b border-slate-100 dark:border-slate-700 p-2 pl-8 text-slate-500 dark:text-slate-400 text-right">SOLDE</th>
+            <th class="border-b border-slate-100 dark:border-slate-700 p-2 pl-8 text-slate-500 dark:text-slate-400 text-right">{{ solde|number_format(2, ',', ' ') }}</th>
+            <th class="border-b border-slate-100 dark:border-slate-700 p-2 pl-8 text-slate-500 dark:text-slate-400 text-right"></th>
+        </tr>
+    </tfoot>
+</table>

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\ArticleRepository;
+use App\Repository\BankReconciliationRepository;
 use App\Repository\ExpenseRepository;
 use App\Repository\LettrageRepository;
 use App\Repository\MovementRepository;
@@ -118,6 +119,15 @@ class DashboardController extends AbstractController
         );
         return $this->render('dashboard/_stock_recap.html.twig', [
             'stocks' => $stockRecap,
+        ]);
+    }
+
+    #[Route('/dash/bank', name: 'app_dashboard_bank')]
+    public function getBankRecap(BankReconciliationRepository $repository): Response
+    {
+        $bankRecap = $repository->findBy([], ['operationDate' => 'DESC']);
+        return $this->render('dashboard/_bank_recap.html.twig', [
+            'bank' => $bankRecap,
         ]);
     }
 

@@ -31,6 +31,12 @@
                             Stock
                         </a>
                     </li>
+                    <li class="flex-1">
+                        <a href="{{ path('app_dashboard', {tab: 'bank'}) }}" id="for-bank"
+                           class="{{ (tab == 'bank')?activeTab:inactiveTab }}">
+                            Banque
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -49,6 +55,9 @@
             {% endif %}
             {% if tab == 'stock' %}
                 {{ render(path('app_dashboard_stock')) }}
+            {% endif %}
+            {% if tab == 'bank' %}
+                {{ render(path('app_dashboard_bank')) }}
             {% endif %}
         </div>
     </div>

@@ -1,0 +1,89 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Banque{% endblock %}
+
+{% block body %}
+    <h1 class="font-bold">
+        Rapprochement bancaire
+    </h1>
+    <p class="font-bold pb-3">{{ bank.label }} {{ bank.accountNumber }}</p>
+    <table class="border-collapse table-auto w-full text-sm">
+        <thead>
+            <tr>
+                <th class="border-b dark:border-slate-600 font-medium p-2 pt-0 pb-3 text-slate-400 dark:text-slate-200 text-left">Date</th>
+                <th class="border-b dark:border-slate-600 font-medium p-2 pt-0 pb-3 text-slate-400 dark:text-slate-200 text-left">Description</th>
+                <th class="border-b dark:border-slate-600 font-medium p-2 pt-0 pb-3 text-slate-400 dark:text-slate-200 text-right">Crédit</th>
+                <th class="border-b dark:border-slate-600 font-medium p-2 pt-0 pb-3 text-slate-400 dark:text-slate-200 text-right">Débit</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr id="newReconciliation">
+                <td class="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400">
+                    <input type="hidden" name="bankAccount" value="{{ bank.id }}" />
+                    <input type="date" name="operationDate" value="{{ 'now'|date('Y-m-d') }}" class="focus:outline-none block w-full rounded-md border border-gray-200 dark:border-gray-600 bg-transparent px-4 py-3 text-gray-600 transition duration-300 invalid:ring-2 invalid:ring-red-400 focus:ring-2 focus:ring-cyan-300" />
+                </td>
+                <td class="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400">
+                    <input type="text" name="label" class="focus:outline-none block w-full rounded-md border border-gray-200 dark:border-gray-600 bg-transparent px-4 py-3 text-gray-600 transition duration-300 invalid:ring-2 invalid:ring-red-400 focus:ring-2 focus:ring-cyan-300" />
+                </td>
+                <td class="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400">
+                    <input type="number" name="credit" value="0" class="text-right focus:outline-none block w-full rounded-md border border-gray-200 dark:border-gray-600 bg-transparent px-4 py-3 text-gray-600 transition duration-300 invalid:ring-2 invalid:ring-red-400 focus:ring-2 focus:ring-cyan-300" />
+                </td>
+                <td class="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400">
+                    <input type="number" name="debit" value="0"  class="text-right focus:outline-none block w-full rounded-md border border-gray-200 dark:border-gray-600 bg-transparent px-4 py-3 text-gray-600 transition duration-300 invalid:ring-2 invalid:ring-red-400 focus:ring-2 focus:ring-cyan-300" />
+                </td>
+                <td class="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400">
+                    <button type="button" name="save" data-path="{{ path('app_bank_add_reconciliation') }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4 w-4">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
+                    </button>
+                    <svg class="animate-spin h-4 w-4 text-blue-800 hidden inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                </td>
+            </tr>
+            {% set totalCredit = 0 %}
+            {% set totalDedit = 0 %}
+            {% for reconciliation in bank.bankReconciliations %}
+                {% set totalCredit = totalCredit + reconciliation.credit %}
+                {% set totalDedit = totalDedit + reconciliation.debit %}
+            <tr>
+                <td class="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400">{{ reconciliation.operationDate|date('d/m/Y') }}</td>
+                <td class="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400">{{ reconciliation.label }}</td>
+                <td class="credit text-right border-b border-slate-100 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400">{{ reconciliation.credit|number_format(2, ',', ' ') }}</td>
+                <td class="debit text-right border-b border-slate-100 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400">{{ reconciliation.debit|number_format(2, ',', ' ') }}</td>
+                <td></td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" class="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400">Aucun rapprochement fait</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        {% if bank.bankReconciliations|length %}
+        <tfoot>
+            <tr>
+                <th colspan="2" class="text-right border-b border-slate-100 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400">TOTAL</th>
+                <th class="text-right border-b border-slate-100 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400" id="totalCredit">{{ totalCredit|number_format(2, ',', ' ') }}</th>
+                <th class="text-right border-b border-slate-100 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400" id="totalDebit">{{ totalDedit|number_format(2, ',', ' ') }}</th>
+                <th></th>
+            </tr>
+            <tr>
+                <th colspan="2" class="text-right border-b border-slate-100 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400">SOLDE</th>
+                <th class="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400"></th>
+                <th class="text-right border-b border-slate-100 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400" id="solde">{{ (totalCredit - totalDedit)|number_format(2, ',', ' ') }}</th>
+                <th></th>
+            </tr>
+        </tfoot>
+        {% endif %}
+    </table>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+
+    </script>
+{% endblock %}
