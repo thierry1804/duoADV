@@ -101,4 +101,24 @@ class ArticleController extends AbstractController
 
         return $this->redirectToRoute('app_article_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    #[Route('/{id}/stock/adjust/{initialQty}', name: 'app_article_stock',
+        requirements: ['id' => '\d+', 'initialQty' => '\d+'], methods: ['GET'])]
+    public function adjustStock(Article $article, int $initialQty, EntityManagerInterface $entityManager): Response
+    {
+        $diff = $article->getInStock() - $initialQty;
+        $article->setInStock($initialQty);
+        $entityManager->persist($article);
+
+        //fix movements
+        $movements = $article->getMovements();
+        foreach ($movements as $movement) {
+            $movement->setStockBefore($movement->getStockBefore() - $diff);
+            $movement->setStockAfter($movement->getStockAfter() - $diff);
+            $entityManager->persist($movement);
+        }
+
+        $entityManager->flush();
+        return $this->redirectToRoute('app_article_index', [], Response::HTTP_SEE_OTHER);
+    }
 }
