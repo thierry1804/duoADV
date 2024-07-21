@@ -46,8 +46,8 @@ class SaleRepository extends ServiceEntityRepository
             SELECT 
                 s.sold_on, 
                 SUM((s.qty - s.qty_returned) * (a.sell_price - COALESCE(s.promo, 0))) AS 'vente',
-                IF(s.received = 1, SUM((s.qty - s.qty_returned) * (a.sell_price - COALESCE(s.promo, 0))), 0) AS 'vente_encaissee',
-                SUM((s.qty - s.qty_returned) * (a.sell_price - COALESCE(s.promo, 0))) - IF(s.received = 1, SUM((s.qty - s.qty_returned) * (a.sell_price - COALESCE(s.promo, 0))), 0) as 'reste_a_encaisser'
+                SUM(IF(s.received = 1, (s.qty - s.qty_returned) * (a.sell_price - COALESCE(s.promo, 0)), 0)) AS 'vente_encaissee',
+                SUM((s.qty - s.qty_returned) * (a.sell_price - COALESCE(s.promo, 0))) - SUM(IF(s.received = 1, (s.qty - s.qty_returned) * (a.sell_price - COALESCE(s.promo, 0)), 0)) as 'reste_a_encaisser'
             FROM sale s 
             INNER JOIN article a ON a.id = s.item_id 
             GROUP BY s.sold_on 

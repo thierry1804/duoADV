@@ -75,4 +75,18 @@ class MovementRepository extends ServiceEntityRepository
 
         return $stmt->fetchAllAssociative();
     }
+
+    public function isArticleHasMovement(Article $article): bool
+    {
+        $qry = $this->createQueryBuilder('m')
+            ->select('m.id')
+            ->where('m.article = :article')
+            ->setParameter('article', $article)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+
+        return (bool)$qry;
+    }
 }

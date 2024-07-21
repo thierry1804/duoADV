@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Lettrage;
 use App\Form\LettrageType;
+use App\Repository\BankReconciliationRepository;
 use App\Repository\LettrageRepository;
 use Doctrine\DBAL\Exception;
 use Doctrine\ORM\EntityManagerInterface;
@@ -21,13 +22,16 @@ class LettrageController extends AbstractController
      * @throws Exception
      */
     #[Route('/', name: 'app_lettrage_index', methods: ['GET'])]
-    public function index(LettrageRepository $lettrageRepository): Response
+    public function index(LettrageRepository $lettrageRepository,
+                          BankReconciliationRepository $reconciliationRepository): Response
     {
         $lettrages = $lettrageRepository->getAll();
         $totals = $lettrageRepository->getTotals($lettrages);
+        $balance = $reconciliationRepository->getBalance();
         return $this->render('lettrage/index.html.twig', [
             'lettrages' => $lettrages,
             'totals' => $totals,
+            'balance' => $balance[0]['balance'],
         ]);
     }
 

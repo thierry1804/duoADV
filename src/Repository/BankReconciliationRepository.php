@@ -16,28 +16,18 @@ class BankReconciliationRepository extends ServiceEntityRepository
         parent::__construct($registry, BankReconciliation::class);
     }
 
-    //    /**
-    //     * @return BankReconciliation[] Returns an array of BankReconciliation objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('b')
-    //            ->andWhere('b.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('b.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function getBalance(): array
+    {
+        $sql = "
+            SELECT 
+                SUM(b.credit) - SUM(b.debit) AS 'balance'
+            FROM bank_reconciliation b
+            WHERE 1;
+        ";
 
-    //    public function findOneBySomeField($value): ?BankReconciliation
-    //    {
-    //        return $this->createQueryBuilder('b')
-    //            ->andWhere('b.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->executeQuery($sql);
+
+        return $stmt->fetchAllAssociative();
+    }
 }

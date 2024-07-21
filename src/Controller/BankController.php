@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\BankReconciliation;
-use App\Form\BankType;
 use App\Repository\BankAccountRepository;
 use App\Repository\BankReconciliationRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,9 +17,7 @@ class BankController extends AbstractController
     public function index(BankAccountRepository $bankAccountRepository): Response
     {
         $bank = $bankAccountRepository->findOneBy([]);
-        $form = $this->createForm(BankType::class, $bank);
         return $this->render('bank/index.html.twig', [
-            'form' => $form,
             'bank' => $bank,
         ]);
     }

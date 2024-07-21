@@ -27,7 +27,7 @@ class StockService
 
         foreach ($sales as $sale) {
             $article = $sale->getItem();
-            //lookup for the article in the historization array
+            //lookup for the article in the historisation array
             $stockBefore = 0;
             if (in_array($article->getId(), array_keys($historization))) {
                 $stockBefore = $historization[$article->getId()];
@@ -35,7 +35,7 @@ class StockService
                 //lookup for the article in the entity Movement
                 $stockBefore = $this->movementRepository->getLastSockOfAnArticle($article);
             }
-            if ($stockBefore === 0) {
+            if ($stockBefore === 0 && !$this->movementRepository->isArticleHasMovement($article)) {
                 $stockBefore = $article->getInStock();
             }
             $historization[$article->getId()] = $stockBefore + ($sale->getQtyReturned() - $sale->getQty());

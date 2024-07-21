@@ -31,7 +31,8 @@ class DashboardController extends AbstractController
     public function getOperationRecap(LettrageRepository $lettrageRepository,
                                       SaleRepository $saleRepository,
                                       ExpenseRepository $expenseRepository,
-                                      ArticleRepository $articleRepository): Response
+                                      ArticleRepository $articleRepository,
+                                      BankReconciliationRepository $reconciliationRepository): Response
     {
         $lettrages = $lettrageRepository->getAll();
         $totals = $lettrageRepository->getTotals($lettrages);
@@ -45,6 +46,8 @@ class DashboardController extends AbstractController
         $totalExpense = $expenseRepository->calcAllExpenses($expenses);
         $totalPaid = $expenseRepository->calcAllExpenses($expenses, true);
         $totalUnPaid = $expenseRepository->calcAllExpenses($expenses, false);
+
+        $balance = $reconciliationRepository->getBalance();
         return $this->render(
             'dashboard/_operation_recap.html.twig',
             [
@@ -56,6 +59,7 @@ class DashboardController extends AbstractController
                 'totalPaidAmount' => $totalPaid,
                 'totalUnpaidAmount' => $totalUnPaid,
                 'articles' => $articleRepository->getArticles(),
+                'balance' => $balance[0]['balance'],
             ]
         );
     }
