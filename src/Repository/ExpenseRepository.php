@@ -38,7 +38,7 @@ class ExpenseRepository extends ServiceEntityRepository
                 SUM(e.amount) AS 'totExpense', 
                 SUM(IF(e.paid = 1, e.amount, 0)) AS 'totPaidExpense', 
                 SUM(IF(e.paid = 0, e.amount, 0)) AS 'totUnpaidExpense'
-            FROM eshopbyv_adv.expense e
+            FROM expense e
             GROUP BY e.recorded_at 
             ORDER BY e.recorded_at DESC;
         ";
