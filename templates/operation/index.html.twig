@@ -1,0 +1,57 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Opérations Hebdomadaires{% endblock %}
+
+{% block body %}
+    <h1 class="font-bold">
+        Opérations Hebdomadaires
+    </h1>
+    <!-- affichage du calendrier date range ou sélecteur de semaine -->
+    <form method="post">
+        <input value="{{ week }}" type="week" id="week" name="week" class="focus:outline-none block w-full rounded-md border border-gray-200 dark:border-gray-600 bg-transparent p-2 text-gray-600 transition duration-300 invalid:ring-2 invalid:ring-red-400 focus:ring-2 focus:ring-cyan-300" />
+    </form>
+    <!-- affichage des opérations de la semaine sélectionnée -->
+    {% set total = 0 %}
+    {% for d in dates %}
+        {% set filteredSales = sales|filter(sale => sale.soldOn|date('Y-m-d') == d) %}
+        <div class="flex pt-2">
+            <div class="flex-none w-auto">
+                <div class="relative inline-block border bg-white rounded w-16">
+                    <div class="p-1 bg-gray-600 text-center text-white text-xs rounded-t font-bold">
+                        {{ ('month.' ~ d|date('F')|lower)|trans({}, 'messages', 'fr') }}
+                    </div>
+                    <div class="p-1 text-center text-2xl font-bold leading-none py-0">
+                        {{ d|date('d') }}
+                    </div>
+                    <div class="px-1 pt-0 pb-1 text-xs text-center">
+                        {{ ('day.' ~ d|date('l')|lower)|trans({}, 'messages', 'fr') }}
+                    </div>
+                </div>
+            </div>
+            <div class="grow ps-2">
+                <p class="font-bold">{{ filteredSales|length }} vente{{ (filteredSales|length > 1)?"s":"" }} enregistrée{{ (filteredSales|length > 1)?"s":"" }}</p>
+                <ul role="list" class="divide-y divide-gray-100">
+                {% set subTotal = 0 %}
+                {% for sale in filteredSales %}
+                    <li class="flex justify-between gap-x-6 py-5 text-sm">
+                        {% set amount = (sale.item.sellPrice - sale.promo) * (sale.qty - sale.qtyReturned) %}
+                        {% set subTotal = subTotal + amount %}
+                        {% set total = total + amount %}
+                        <p>{{ sale.item.label }}</p>
+                        <p>{{ amount|number_format(0, ',', ' ') }}</p>
+                    </li>
+                {% endfor %}
+                </ul>
+                <div class="flex justify-between text-base font-medium text-gray-400 text-sm">
+                    <p>Sous-total</p>
+                    <p>{{ subTotal|number_format(0, ',', ' ') }}</p>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    <div class="flex justify-between text-base font-medium text-gray-900">
+        <p>Total</p>
+        <p>{{ total|number_format(0, ',', ' ') }}</p>
+    </div>
+    <!-- zone de saisie du montant versement de livraison -->
+{% endblock %}

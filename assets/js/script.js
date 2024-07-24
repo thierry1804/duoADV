@@ -84,3 +84,36 @@ if ($('button[name=save]').length) {
         });
     });
 }
+
+window.addEventListener('DOMContentLoaded', (event) => {
+    const now = new Date();
+    const dayOfWeek = now.getDay();
+    const numDay = now.getDate();
+
+    const startOfWeek = new Date(now);
+    // If it's Saturday or Sunday, set to previous Saturday
+    if (dayOfWeek === 0 || dayOfWeek === 6) {
+        startOfWeek.setDate(numDay - (dayOfWeek === 0 ? 1 : 6));
+    } else {
+        // Otherwise, set to next Friday
+        startOfWeek.setDate(numDay + (5 - dayOfWeek));
+    }
+
+    const firstDayOfYear = new Date(startOfWeek.getFullYear(), 0, 1);
+    const pastDaysOfYear = (startOfWeek - firstDayOfYear) / 86400000;
+    const weekNum = Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+    const weekInput = document.getElementById('week');
+
+    if (weekInput) {
+        //weekInput.value = `${startOfWeek.getFullYear()}-W${weekNum < 10 ? '0' + weekNum : weekNum}`;
+    }
+});
+
+window.addEventListener('DOMContentLoaded', (event) => {
+    const weekInput = document.getElementById('week');
+    if (weekInput) {
+        weekInput.addEventListener('change', function() {
+            this.form.submit();
+        });
+    }
+});

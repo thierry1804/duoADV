@@ -95,4 +95,21 @@ class SaleRepository extends ServiceEntityRepository
 
         return $salesRecap;
     }
+
+    /**
+     * @param string $dateStart
+     * @param string $dateEnd
+     * @return array
+     */
+    public function getSalesBetweenDates(string $dateStart, string $dateEnd): array
+    {
+        $qb = $this->createQueryBuilder('s')
+            ->select('s')
+            ->where('s.soldOn >= :dateStart AND s.soldOn <= :dateEnd')
+            ->setParameter('dateStart', $dateStart)
+            ->setParameter('dateEnd', $dateEnd)
+            ->getQuery();
+
+        return $qb->getResult();
+    }
 }
