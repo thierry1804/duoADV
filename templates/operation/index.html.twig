@@ -3,11 +3,11 @@
 {% block title %}Opérations Hebdomadaires{% endblock %}
 
 {% block body %}
-    <h1 class="font-bold">
-        Opérations Hebdomadaires
-    </h1>
     <!-- affichage du calendrier date range ou sélecteur de semaine -->
-    <form method="post">
+    <form method="post" class="sticky top-16 bg-white z-50">
+        <h1 class="font-bold">
+            Opérations Hebdomadaires
+        </h1>
         <input value="{{ week }}" type="week" id="week" name="week" class="focus:outline-none block w-full rounded-md border border-gray-200 dark:border-gray-600 bg-transparent p-2 text-gray-600 transition duration-300 invalid:ring-2 invalid:ring-red-400 focus:ring-2 focus:ring-cyan-300" />
     </form>
     <!-- affichage des opérations de la semaine sélectionnée -->
@@ -40,16 +40,20 @@
                         <p>{{ sale.item.label }}</p>
                         <p>{{ amount|number_format(0, ',', ' ') }}</p>
                     </li>
+                {% else %}
+                    <li class="flex justify-between gap-x-6 py-5 text-sm">
+                        <p>Aucune opération</p>
+                    </li>
                 {% endfor %}
+                    <li class="flex justify-between gap-x-6 py-3 text-sm text-base font-medium text-gray-400 bg-slate-200">
+                        <p>Sous-total</p>
+                        <p>{{ subTotal|number_format(0, ',', ' ') }}</p>
+                    </li>
                 </ul>
-                <div class="flex justify-between text-base font-medium text-gray-400 text-sm">
-                    <p>Sous-total</p>
-                    <p>{{ subTotal|number_format(0, ',', ' ') }}</p>
-                </div>
             </div>
         </div>
     {% endfor %}
-    <div class="flex justify-between text-base font-medium text-gray-900">
+    <div class="flex justify-between text-base font-medium text-gray-900 sticky bottom-0">
         <p>Total</p>
         <p>{{ total|number_format(0, ',', ' ') }}</p>
     </div>
