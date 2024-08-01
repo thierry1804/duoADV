@@ -3,9 +3,11 @@
 namespace App\Service;
 
 use App\Entity\Movement;
+use App\Entity\Sale;
 use App\Repository\MovementRepository;
 use App\Repository\SaleRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Validator\Constraints\Date;
 
 class StockService
 {
@@ -57,5 +59,40 @@ class StockService
         }
 
         return 'Historization processed.';
+    }
+
+    /**
+     * @param Sale $sale
+     * @return void
+     */
+    public function historizeStockBySale(Sale $sale): void
+    {
+        $article = $sale->getItem();
+        // Find in Movement if there is a record for this sale and the article with type = 3
+        $movement = $this->movementRepository->findOneBy(['article' => $article, 'reference' => $sale->getId(), 'type' => 3]);
+        // If any, delete it
+        if ($movement) {
+            $this->entityManager->remove($movement);
+            $this->entityManager->flush();
+        }
+
+        //lookup for the article in the entity Movement
+        $stockBefore = $this->movementRepository->getLastSockOfAnArticle($article);
+        $stockAfter = $stockBefore + $sale->getQtyReturned();
+
+        $movement = new Movement();
+        $movement->setOperatedAt(new \DateTime());
+        $movement->setArticle($article);
+        $movement->setType(3);
+        $movement->setReference($sale->getId());
+        $movement->setStockBefore($stockBefore);
+        $movement->setQty($sale->getQtyReturned());
+        $movement->setStockAfter($stockAfter);
+
+        $sale->setHistorized(true);
+
+        $this->entityManager->persist($sale);
+        $this->entityManager->persist($movement);
+        $this->entityManager->flush();
     }
 }

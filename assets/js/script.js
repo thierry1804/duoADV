@@ -117,3 +117,66 @@ window.addEventListener('DOMContentLoaded', (event) => {
         });
     }
 });
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    // Select all the buttons
+    const buttons = document.querySelectorAll('button.backToStock');
+
+    // Loop over all buttons
+    buttons.forEach((button) => {
+        // Add an event listener to each button
+        button.addEventListener('click', (event) => {
+            // Prevent the default action of the button
+            event.preventDefault();
+
+            // Select the input field that is in the same container as the button
+            const input = event.target.parentNode.parentNode.querySelector('input.returnedQty');
+            const saleId = event.target.parentNode.parentNode.querySelector('input.saleId');
+            //get the path
+            const btn = event.target.parentNode.parentNode.querySelector('button.backToStock');
+            let path = btn.dataset.path;
+
+            // Check if the value of the input field is greater than 0
+            if (parseInt(input.value) > 0) {
+                // mark the button as disabled
+                event.target.parentNode.disabled = true;
+                // mark the input field as disabled
+                input.disabled = true;
+                // spin the button
+                event.target.classList.add('hidden');
+                event.target.parentNode.parentNode.querySelector('svg.waiting').classList.remove('hidden');
+
+                // Make an AJAX request
+                $.ajax({
+                    url: path,
+                    type: 'POST',
+                    data: {
+                        saleId: saleId.value,
+                        returnedQty: input.value
+                    },
+                    success: function(data) {
+                        event.target.parentNode.parentNode.querySelector('svg.waiting').classList.add('hidden');
+                        event.target.classList.remove('hidden');
+                        event.target.parentNode.disabled = false;
+                        input.disabled = false;
+                        if (data.error) {
+                            alert(data.error);
+                            input.value = 0;
+                        }
+                        else {
+                            //refresh the page
+                            location.reload();
+                        }
+                    },
+                    error: function(data) {
+                        // If the request fails, remove the disabled attribute from the button and input field
+                        event.target.parentNode.disabled = false;
+                        input.disabled = false;
+                        event.target.classList.remove('hidden');
+                        event.target.parentNode.parentNode.querySelector('svg.waiting').classList.add('hidden');
+                    }
+                });
+            }
+        });
+    });
+});

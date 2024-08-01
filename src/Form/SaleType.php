@@ -48,6 +48,9 @@ class SaleType extends AbstractType
                 'choice_label' => 'label',
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('a')
+                        ->leftJoin('a.movements', 'm')
+                        ->andWhere('m.stockAfter > 0')
+                        ->andWhere('a.inStock > 0')
                         ->orderBy('a.label', 'ASC')
                     ;
                 },

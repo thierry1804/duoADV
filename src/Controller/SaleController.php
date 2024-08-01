@@ -124,4 +124,23 @@ class SaleController extends AbstractController
 
         return new JsonResponse(['status' => $received]);
     }
+
+    #[Route('/{id}/edit/qty-returned', name: 'app_sale_edit_qty_returned', methods: ['POST'])]
+    public function manageReturnedQty(Request $request, Sale $sale, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $qtyReturned = $request->getPayload()->get('returnedQty');
+        $qtyReturned = $qtyReturned < 0 ? 0 : $qtyReturned;
+
+        if ($qtyReturned > $sale->getQty()) {
+            return new JsonResponse(['error' => 'La quantité retournée ne peut pas être supérieure à la quantité vendue.', 'qtyReturned' => $sale->getQty()]);
+        }
+
+        $sale->setQtyReturned($qtyReturned);
+        $entityManager->persist($sale);
+        $entityManager->flush();
+
+        $this->stockService->historizeStockBySale($sale);
+
+        return new JsonResponse(['qtyReturned' => $qtyReturned, 'error' => null]);
+    }
 }
