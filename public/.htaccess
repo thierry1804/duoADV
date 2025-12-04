@@ -1,3 +1,13 @@
+# Protection DoS: Limitation du nombre d'en-têtes HTTP
+# Note: Ces directives doivent être configurées dans la configuration principale d'Apache
+# (httpd.conf ou apache2.conf), pas dans .htaccess :
+# LimitRequestFields 100
+# LimitRequestFieldSize 8190
+# LimitRequestLine 8190
+#
+# Une protection au niveau de l'application Symfony est également en place via
+# App\EventListener\HttpHeadersLimitListener (limite configurable dans config/services.yaml)
+
 # Use the front controller as index file. It serves as a fallback solution when
 # every other rewrite/redirect fails (e.g. in an aliased environment without
 # mod_rewrite). Additionally, this reduces the matching process for the
